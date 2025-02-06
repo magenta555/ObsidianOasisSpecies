@@ -11,14 +11,17 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.Particle;
 import org.bukkit.util.Vector;
 import org.bukkit.Color;
 import org.bukkit.Particle.DustOptions;
+import org.bukkit.Sound; // Import Sound Enum
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,12 +29,42 @@ public class Vampire implements Listener {
 
     private final Rol plugin;
     private final Map<UUID, Long> cooldowns = new HashMap<>();
-    private final int TELEPORT_COOLDOWN = 30; // Seconds
-    private final double PARTICLE_DISTANCE = 0.5; // Distance between particles
+    private int teleportCooldown; // Configurable
+    private double particleDistance; // Configurable
+    private int particleCount; // Configurable
+    private Color particleColor; // Configurable
+    private String abilitySound; // Configurable
+    private double soundVolume; // Configurable
+    private double soundPitch; // Configurable
+    private double teleportDistance; // Configurable
+    private int damageImmunityDuration; // Configurable
+
     private final String PARTICLE_TRAIL_METADATA = "particleTrail";
 
     public Vampire(Rol plugin) {
         this.plugin = plugin;
+        loadConfig();
+    }
+
+    private void loadConfig() {
+        FileConfiguration config = plugin.getConfig();
+
+        teleportCooldown = config.getInt("rol.vampire.cooldown", 20);
+        particleDistance = config.getDouble("rol.vampire.particle.distance", 0.5);
+        particleCount = config.getInt("rol.vampire.particle.count", 10);
+
+        // Load Color from config (R, G, B)
+        int red = config.getInt("rol.vampire.particle.color.red", 255);
+        int green = config.getInt("rol.vampire.particle.color.green", 0);
+        int blue = config.getInt("rol.vampire.particle.color.blue", 0);
+        particleColor = Color.fromRGB(red, green, blue);
+
+        abilitySound = config.getString("rol.vampire.ability_sound", "ENTITY_BAT_TAKEOFF");
+        soundVolume = config.getDouble("rol.vampire.sound_volume", 1.0);
+        soundPitch = config.getDouble("rol.vampire.sound_pitch", 1.0);
+        teleportDistance = config.getDouble("rol.vampire.teleport_distance", 5.0);
+        damageImmunityDuration = config.getInt("rol.vampire.damage_immunity_duration", 20);
+
     }
 
     @EventHandler
@@ -67,6 +100,17 @@ public class Vampire implements Listener {
     }
 
     private void useVampireAbility(Player player) {
+        // Play Sound from config
+        try {
+            @SuppressWarnings("deprecation")
+            Sound sound = Sound.valueOf(abilitySound);
+             player.getWorld().playSound(player.getLocation(), sound, (float) soundVolume, (float) soundPitch);
+        } catch (IllegalArgumentException e) {
+            plugin.getLogger().warning("Invalid sound name in config: " + abilitySound);
+            // Fallback sound if the configured sound is invalid
+            player.getWorld().playSound(player.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1.0f, 1.0f);
+        }
+
         // 1. Particle Trail
         startParticleTrail(player);
 
@@ -77,7 +121,7 @@ public class Vampire implements Listener {
                 stopParticleTrail(player);
                 teleportAndRotatePlayer(player);
                 // 3. Damage Immunity (after teleport)
-                giveTemporaryDamageImmunity(player, 20); // 20 ticks = 1 second
+                giveTemporaryDamageImmunity(player, damageImmunityDuration);
                 startCooldown(player);
             }
         }.runTaskLater(plugin, 20); // Delay 1 second
@@ -86,7 +130,7 @@ public class Vampire implements Listener {
 
     private void teleportAndRotatePlayer(Player player) {
         Location currentLocation = player.getLocation();
-        Location newLocation = currentLocation.add(currentLocation.getDirection().multiply(5));
+        Location newLocation = currentLocation.add(currentLocation.getDirection().multiply(teleportDistance));
         newLocation.setYaw(currentLocation.getYaw() + 180); // Rotate 180 degrees
 
         player.teleport(newLocation);
@@ -118,7 +162,7 @@ public class Vampire implements Listener {
     }
 
     private void startCooldown(Player player) {
-        cooldowns.put(player.getUniqueId(), System.currentTimeMillis() + (TELEPORT_COOLDOWN * 1000));
+        cooldowns.put(player.getUniqueId(), System.currentTimeMillis() + (teleportCooldown * 1000));
     }
 
     private boolean isOnCooldown(Player player) {
@@ -135,7 +179,7 @@ public class Vampire implements Listener {
     }
 
 
-   private void startParticleTrail(Player player) {
+    private void startParticleTrail(Player player) {
         BukkitRunnable particleTask = new BukkitRunnable() {
             Location lastLocation = player.getLocation();
 
@@ -155,9 +199,9 @@ public class Vampire implements Listener {
 
                     while (currentDistance < distance) {
                         Location particleLocation = lastLocation.clone().add(direction.clone().multiply(currentDistance));
-                        DustOptions dustOptions = new DustOptions(Color.fromRGB(255, 0, 0), 2); // Larger red dust
-                        player.getWorld().spawnParticle(Particle.DUST, particleLocation, 10, 0, 0, 0, dustOptions); // Increased count to 10
-                        currentDistance += PARTICLE_DISTANCE;
+                        DustOptions dustOptions = new DustOptions(particleColor, 2); // Larger red dust
+                        player.getWorld().spawnParticle(Particle.DUST, particleLocation, particleCount, 0, 0, 0, dustOptions); // Increased count to 10
+                        currentDistance += particleDistance;
                     }
                 }
 
@@ -172,10 +216,25 @@ public class Vampire implements Listener {
 
     private void stopParticleTrail(Player player) {
         if (player.hasMetadata(PARTICLE_TRAIL_METADATA)) {
-            FixedMetadataValue metadata = (FixedMetadataValue) player.getMetadata(PARTICLE_TRAIL_METADATA).get(0);
-            BukkitRunnable task = (BukkitRunnable) metadata.value();
-            task.cancel();
-            player.removeMetadata(PARTICLE_TRAIL_METADATA, plugin);
+            List<MetadataValue> metadataValues = player.getMetadata(PARTICLE_TRAIL_METADATA);
+            if (!metadataValues.isEmpty()) {
+                MetadataValue metadataValue = metadataValues.get(0);
+                if (metadataValue instanceof FixedMetadataValue) {
+                    FixedMetadataValue fixedMetadataValue = (FixedMetadataValue) metadataValue;
+                    Object value = fixedMetadataValue.value();
+                    if (value instanceof BukkitRunnable) {
+                        BukkitRunnable task = (BukkitRunnable) value;
+                        task.cancel();
+                        player.removeMetadata(PARTICLE_TRAIL_METADATA, plugin);
+                    } else {
+                        plugin.getLogger().warning("Metadata value is not a BukkitRunnable for player: " + player.getName());
+                    }
+                } else {
+                    plugin.getLogger().warning("Metadata value is not a FixedMetadataValue for player: " + player.getName());
+                }
+            } else {
+                plugin.getLogger().warning("Metadata list is empty for player: " + player.getName());
+            }
         }
     }
 }

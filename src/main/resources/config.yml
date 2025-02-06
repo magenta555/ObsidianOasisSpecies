@@ -3,4 +3,17 @@ rol:
     abilityitem: STICK
   vampire:
     abilityitem: SWORD
+    cooldown: 20
+    particle:
+      distance: 0.5
+      count: 10
+      color:
+        red: 255
+        green: 0
+        blue: 0
+    ability_sound: ENTITY_BAT_TAKEOFF
+    sound_volume: 1.0
+    sound_pitch: 1.0
+    teleport_distance: 5.0
+    damage_immunity_duration: 20
   players:
