@@ -9,8 +9,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.entity.Entity;
@@ -30,6 +28,7 @@ public class Vampire implements Listener {
     private final Map<UUID, Long> cooldowns = new HashMap<>();
     private final int TELEPORT_COOLDOWN = 30; // Seconds
     private final double PARTICLE_DISTANCE = 0.5; // Distance between particles
+    private final String PARTICLE_TRAIL_METADATA = "particleTrail";
 
     public Vampire(Rol plugin) {
         this.plugin = plugin;
@@ -136,13 +135,13 @@ public class Vampire implements Listener {
     }
 
 
-    private void startParticleTrail(Player player) {
-        player.setMetadata("particleTrail", new FixedMetadataValue(plugin, new BukkitRunnable() {
+   private void startParticleTrail(Player player) {
+        BukkitRunnable particleTask = new BukkitRunnable() {
             Location lastLocation = player.getLocation();
 
             @Override
             public void run() {
-                if (!player.isOnline() || !player.hasMetadata("particleTrail")) {
+                if (!player.isOnline() || !player.hasMetadata(PARTICLE_TRAIL_METADATA)) {
                     this.cancel();
                     return;
                 }
@@ -156,22 +155,27 @@ public class Vampire implements Listener {
 
                     while (currentDistance < distance) {
                         Location particleLocation = lastLocation.clone().add(direction.clone().multiply(currentDistance));
-                        DustOptions dustOptions = new DustOptions(Color.RED, 1); //creates a red dust option
-                        player.getWorld().spawnParticle(Particle.SPELL_MOB, particleLocation, 1, 0, 0, 0, 0, dustOptions); // Red spiral particle
+                        DustOptions dustOptions = new DustOptions(Color.fromRGB(255, 0, 0), 2); // Larger red dust
+                        player.getWorld().spawnParticle(Particle.DUST, particleLocation, 10, 0, 0, 0, dustOptions); // Increased count to 10
                         currentDistance += PARTICLE_DISTANCE;
                     }
                 }
 
                 lastLocation = currentLocation.clone();
             }
-        }.runTaskTimer(plugin, 0, 2))); // Run every 2 ticks
+        };
+
+        player.setMetadata(PARTICLE_TRAIL_METADATA, new FixedMetadataValue(plugin, particleTask));
+        particleTask.runTaskTimer(plugin, 0, 1); // Run every tick for more frequent particles
     }
 
+
     private void stopParticleTrail(Player player) {
-        if (player.hasMetadata("particleTrail")) {
-            BukkitRunnable task = (BukkitRunnable) player.getMetadata("particleTrail").get(0).value();
+        if (player.hasMetadata(PARTICLE_TRAIL_METADATA)) {
+            FixedMetadataValue metadata = (FixedMetadataValue) player.getMetadata(PARTICLE_TRAIL_METADATA).get(0);
+            BukkitRunnable task = (BukkitRunnable) metadata.value();
             task.cancel();
-            player.removeMetadata("particleTrail", plugin);
+            player.removeMetadata(PARTICLE_TRAIL_METADATA, plugin);
         }
     }
 }
