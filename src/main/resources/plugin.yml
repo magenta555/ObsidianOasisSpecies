@@ -1,0 +1,18 @@
+name: Rol
+version: 0
+main: com.github.rol.Rol
+description: Roleplaying plugin for Minecraft servers!
+author: magenta555
+website: https://github.com/magenta555/rol
+api-version: 1.21.4
+commands:
+  remanso:
+    description: Display plugin information or use all Rol commands!
+    permission: rol.rol
+    permission-message: §d[Rol] You cannot use this command.
+    usage: /rol
+  r:
+    description: Display plugin information or use all Rol commands!
+    permission: rol.r
+    permission-message: §d[Rol] You cannot use this command.
+    usage: /r
