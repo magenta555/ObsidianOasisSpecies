@@ -7,13 +7,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.Command;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import org.bukkit.configuration.file.FileConfiguration;
+import java.util.Set;
 
 public class Rol extends JavaPlugin {
-
-    // Store player roles using a HashMap
-    private Map<String, String> playerRoles = new HashMap<String, String>();
 
     @Override
     public void onEnable() {
@@ -80,13 +77,31 @@ public class Rol extends JavaPlugin {
         return tabComplete;
     }
 
-    // Method to assign a role to a player
+    // Method to assign a role to a player, storing it in the config
     public void assignRole(Player player, String role) {
-        playerRoles.put(player.getName(), role);
+        FileConfiguration config = getConfig();
+        config.set("players." + player.getName(), role);
+        saveConfig();
     }
 
-    // Method to get a player's role
+    // Method to get a player's role, retrieving it from the config
     public String getPlayerRole(Player player) {
-        return playerRoles.getOrDefault(player.getName(), "human"); // Default to "human" if no role is assigned
+        FileConfiguration config = getConfig();
+        return config.getString("players." + player.getName(), "human"); // Default to "human" if no role is assigned
+    }
+    
+    // Method to load player roles from the config on plugin enable
+    @Override
+    public void onLoad() {
+        FileConfiguration config = getConfig();
+        if (config.getConfigurationSection("players") != null) {
+            Set<String> playerNames = config.getConfigurationSection("players").getKeys(false);
+            for (String playerName : playerNames) {
+                String role = config.getString("players." + playerName);
+                getLogger().info("Loaded role " + role + " for player " + playerName + " from config.");
+            }
+        } else {
+            getLogger().info("No player roles found in config.");
+        }
     }
 }
