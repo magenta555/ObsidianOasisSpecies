@@ -6,7 +6,7 @@ author: magenta555
 website: https://github.com/magenta555/rol
 api-version: 1.21.4
 commands:
-  remanso:
+  rol:
     description: Display plugin information or use all Rol commands!
     permission: rol.rol
     permission-message: §d[Rol] You cannot use this command.

@@ -13,7 +13,7 @@ import java.util.Map;
 public class Rol extends JavaPlugin {
 
     // Store player roles using a HashMap
-    private Map<String, String> playerRoles = new HashMap<>();
+    private Map<String, String> playerRoles = new HashMap<String, String>();
 
     @Override
     public void onEnable() {
@@ -58,7 +58,7 @@ public class Rol extends JavaPlugin {
 
     @Override
     public List<String> onTabComplete(CommandSender s, Command c, String l, String[] a) {
-        List<String> tabComplete = new ArrayList<>();
+        List<String> tabComplete = new ArrayList<String>();
 
         if (a.length == 1) {
             tabComplete.add("help");
