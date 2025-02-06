@@ -41,7 +41,7 @@ public class Vampire implements Listener {
         }
 
         FileConfiguration config = plugin.getConfig();
-        String configuredItemName = config.getString("rol.vampire.abilityitem").toUpperCase();
+        String configuredItemName = config.getString("rol.vampire.abilityitem", "SWORD").toUpperCase();
         String itemName = item.getType().name().toUpperCase();
 
         return itemName.contains(configuredItemName);
