@@ -50,13 +50,14 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            if (speciesManager.isValidSpecies(speciesManager.getPlayerSpecies(player))) {
+            try {
+                speciesManager.isValidSpecies(speciesManager.getPlayerSpecies(player));
                 player.sendMessage(onlySetSpeciesOnceMessage);
                 return true;
+            } catch (Exception e) {
+                new SpeciesMenu(plugin, speciesManager).openInventory(player);
+                return true;
             }
-
-            new SpeciesMenu(plugin, speciesManager).openInventory(player);
-            return true;
         }
 
         if (command.getName().equalsIgnoreCase("setspecies")) {

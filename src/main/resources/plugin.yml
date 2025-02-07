@@ -19,4 +19,4 @@ permissions:
     default: true
   rol.setspecies:
     description: Allows players to use the /setspecies command
-    default: false
+    default: op
