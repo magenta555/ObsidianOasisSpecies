@@ -8,6 +8,7 @@ commands:
     usage: /species
     permission: rol.species
     permission-message: You need the permission rol.species!
+    default: true
   setspecies:
     description: Sets a player's species.
     usage: /setspecies <species> <player>
