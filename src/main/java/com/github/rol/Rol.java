@@ -4,6 +4,9 @@ package com.github.rol;
 import com.github.rol.commands.SpeciesCommand;
 import com.github.rol.listeners.SpeciesListener;
 import com.github.rol.managers.SpeciesManager;
+
+import net.md_5.bungee.api.ChatColor;
+
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -21,7 +24,7 @@ public final class Rol extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        getLogger().info("[Rol] Plugin has been enabled!");
+        getLogger().info(ChatColor.LIGHT_PURPLE + "Plugin has been enabled!");
 
         // Initialize the species manager
         speciesManager = new SpeciesManager(this);
@@ -45,7 +48,7 @@ public final class Rol extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        getLogger().info("[Rol] Plugin has been disabled!");
+        getLogger().info(ChatColor.LIGHT_PURPLE + "Plugin has been disabled!");
 
         // Save species data
         speciesManager.saveSpeciesData();
