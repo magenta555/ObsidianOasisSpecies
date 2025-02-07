@@ -8,8 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Objects;
-
 public final class Rol extends JavaPlugin {
 
     private SpeciesManager speciesManager;
@@ -21,9 +19,12 @@ public final class Rol extends JavaPlugin {
         speciesManager = new SpeciesManager(this);
         speciesManager.loadSpeciesData();
 
+        // Register the /species and /setspecies commands
         SpeciesCommand speciesCommand = new SpeciesCommand(this, speciesManager);
-        Objects.requireNonNull(getCommand("rol")).setExecutor(speciesCommand);
-        Objects.requireNonNull(getCommand("rol")).setTabCompleter(speciesCommand);
+        getCommand("species").setExecutor(speciesCommand);
+        getCommand("setspecies").setExecutor(speciesCommand);
+        getCommand("species").setTabCompleter(speciesCommand);
+        getCommand("setspecies").setTabCompleter(speciesCommand);
 
         getServer().getPluginManager().registerEvents(new SpeciesListener(this, speciesManager), this);
 

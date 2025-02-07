@@ -3,4 +3,13 @@ version: 0
 main: com.github.rol.Rol
 api-version: "1.21.4"
 commands:
-  rol:
+  species:
+    description: Opens the species menu.
+    usage: /species
+    permission: rol.species
+    permission-message: You need the permission rol.species!
+  setspecies:
+    description: Sets a player's species.
+    usage: /setspecies <species> <player>
+    permission: rol.setspecies
+    permission-message: You need the permission rol.setspecies!

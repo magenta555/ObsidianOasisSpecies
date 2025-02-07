@@ -12,10 +12,7 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 public class SpeciesManager {
 
@@ -23,6 +20,7 @@ public class SpeciesManager {
     private final Map<UUID, String> playerSpecies = new HashMap<>();
     private File speciesFile;
     private FileConfiguration speciesConfig;
+    private final List<String> validSpecies = Arrays.asList("HUMAN", "VAMPIRE", "NIGHTCREATURE");
 
     public SpeciesManager(Rol plugin) {
         this.plugin = plugin;
@@ -38,10 +36,10 @@ public class SpeciesManager {
                 plugin.getLogger().info("Creating species.yml file.");
             }
             try {
-                if(speciesFile.createNewFile()){
+                if (speciesFile.createNewFile()) {
                     plugin.getLogger().info("Successfully created species.yml");
                 } else {
-                      plugin.getLogger().warning("Failed to create species.yml.  File may already exist.");
+                    plugin.getLogger().warning("Failed to create species.yml.  File may already exist.");
                 }
 
             } catch (IOException e) {
@@ -55,7 +53,7 @@ public class SpeciesManager {
         speciesConfig = YamlConfiguration.loadConfiguration(speciesFile);
 
         try {
-           scanSpeciesConfig();
+            scanSpeciesConfig();
         } catch (IllegalArgumentException e) {
             plugin.getLogger().severe("Invalid config format in species.yml: " + e.getMessage());
         }
@@ -118,9 +116,7 @@ public class SpeciesManager {
     }
 
     public boolean isValidSpecies(String speciesName) {
-        return speciesName.equalsIgnoreCase("HUMAN") ||
-                speciesName.equalsIgnoreCase("VAMPIRE") ||
-                speciesName.equalsIgnoreCase("NIGHTCREATURE");
+        return validSpecies.contains(speciesName.toUpperCase());
     }
 
     public void applySpeciesEffects(Player player, String speciesName) {
@@ -161,5 +157,9 @@ public class SpeciesManager {
                 scan.close();
             }
         }
+    }
+
+    public List<String> getAllSpecies() {
+        return new ArrayList<>(validSpecies);
     }
 }
