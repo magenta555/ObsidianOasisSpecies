@@ -61,7 +61,6 @@ public class Vampire {
         Block aboveTargetBlock = teleportLocation.clone().add(0, 1, 0).getBlock();
 
         if (!targetBlock.isPassable() || !aboveTargetBlock.isPassable()) {
-            player.sendMessage("[Rol] Teleport destination is not safe.");
             return;
         }
 
@@ -141,7 +140,7 @@ public class Vampire {
         int amplifier = config.getInt(configPath + ".amplifier");
 
         if (enabled && isNight) {
-            PotionEffect nightEffect = new PotionEffect(effectType, 20, amplifier, false, false, true);
+            PotionEffect nightEffect = new PotionEffect(effectType, 60, amplifier, false, false, true);
             player.addPotionEffect(nightEffect);
         } else {
             player.removePotionEffect(effectType);

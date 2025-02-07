@@ -104,8 +104,7 @@ public class SpeciesListener implements Listener {
 
         if (species != null && (species.equalsIgnoreCase("VAMPIRE") || species.equalsIgnoreCase("NIGHTCREATURE"))) {
             if (isDaytime(player.getWorld().getTime()) && !isUnderSunlight(player)) {
-                player.setFireTicks(100);
-                player.sendMessage("[Rol] The sun burns your skin!");
+                player.setFireTicks(1000);
             }
         }
     }
