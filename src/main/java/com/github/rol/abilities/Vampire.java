@@ -4,12 +4,14 @@ package com.github.rol.abilities;
 import com.github.rol.Rol;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.Particle.DustOptions;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.bukkit.Color;
 
 /**
  * Implements the vampire's teleport ability.
@@ -101,7 +103,13 @@ public class Vampire {
                 }
 
                 Location particleLocation = startLocation.clone().add(direction.clone().multiply(travelled));
-                player.getWorld().spawnParticle(Particle.DUST, particleLocation, 5, 0, 0, 0, 1);
+
+                // Create DustOptions for the DUST particle
+                Color color = Color.RED; // You can change the color here
+                float size = 1.0f; // Adjust the size as needed
+                DustOptions dustOptions = new DustOptions(color, size);
+
+                player.getWorld().spawnParticle(Particle.DUST, particleLocation, 5, 0, 0, 0, 1, dustOptions);
                 travelled += particleDensity;
             }
         }.runTaskTimer(plugin, 0, 1);
