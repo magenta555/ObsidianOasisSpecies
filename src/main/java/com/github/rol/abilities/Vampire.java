@@ -140,7 +140,7 @@ public class Vampire {
         int amplifier = config.getInt(configPath + ".amplifier");
 
         if (enabled && isNight) {
-            PotionEffect nightEffect = new PotionEffect(effectType, 60, amplifier, false, false, true);
+            PotionEffect nightEffect = new PotionEffect(effectType, 100, amplifier, false, false, true);
             player.addPotionEffect(nightEffect);
         } else {
             player.removePotionEffect(effectType);
