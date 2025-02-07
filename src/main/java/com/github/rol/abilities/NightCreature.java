@@ -85,7 +85,7 @@ public class NightCreature {
         int amplifier = config.getInt(configPath + ".amplifier");
 
         if (enabled && isNight) {
-            PotionEffect nightEffect = new PotionEffect(effectType, 100, amplifier, false, false, true);
+            PotionEffect nightEffect = new PotionEffect(effectType, 200, amplifier, false, false, true);
             player.addPotionEffect(nightEffect);
         } else {
             player.removePotionEffect(effectType);

@@ -84,13 +84,13 @@ public class SpeciesListener implements Listener {
 
         if (species != null) {
             if (species.equalsIgnoreCase("VAMPIRE")) {
-                if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK &&
+                if (event.getAction() == Action.RIGHT_CLICK_AIR &&
                         player.getInventory().getItemInMainHand().getType().toString().contains("SWORD")) {
                     Vampire vampire = new Vampire(plugin, player);
                     vampire.activateVampireAbility();
                 }
             } else if (species.equalsIgnoreCase("NIGHTCREATURE")) {
-                if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK &&
+                if (event.getAction() == Action.RIGHT_CLICK_AIR &&
                         player.getInventory().getItemInMainHand().getType() == Material.BLAZE_ROD) {
                     NightCreature nightCreature = new NightCreature(plugin, player);
                     nightCreature.activateNightCreatureAbility();
