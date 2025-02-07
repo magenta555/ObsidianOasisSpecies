@@ -1,7 +1,9 @@
 name: Rol
 version: 0
 main: com.github.rol.Rol
-api-version: "1.21.4"
+api-version: 1.21.4
+author: magenta555
+website: github.com/magenta555/rol
 commands:
   species:
     description: Opens the species menu.
