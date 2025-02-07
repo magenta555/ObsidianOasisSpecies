@@ -45,7 +45,7 @@ public class SpeciesManager {
                 }
 
             } catch (IOException e) {
-                plugin.getLogger().severe("[Rol] Could not create species.yml!");
+                plugin.getLogger().severe("Could not create species.yml!");
                 e.printStackTrace();
             }
         }
