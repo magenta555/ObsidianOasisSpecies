@@ -24,14 +24,14 @@ public class SpeciesMenu {
 
     @SuppressWarnings("deprecation")
     private void initializeMenuItems() {
-        ItemStack humanItem = new ItemStack(Material.PLAYER_HEAD, 1);
+        ItemStack humanItem = new ItemStack(Material.WHITE_STAINED_GLASS, 1);
         ItemMeta humanMeta = humanItem.getItemMeta();
         if (humanMeta != null) {
             humanMeta.setDisplayName("Human");
             humanMeta.setLore(Collections.singletonList("The default species."));
             humanItem.setItemMeta(humanMeta);
         }
-        inventory.setItem(2, humanItem);
+        inventory.setItem(0, humanItem);
 
         ItemStack vampireItem = new ItemStack(Material.RED_STAINED_GLASS, 1);
         ItemMeta vampireMeta = vampireItem.getItemMeta();
@@ -40,16 +40,16 @@ public class SpeciesMenu {
             vampireMeta.setLore(Collections.singletonList("A creature of the night."));
             vampireItem.setItemMeta(vampireMeta);
         }
-        inventory.setItem(4, vampireItem);
+        inventory.setItem(1, vampireItem);
 
-        ItemStack nightCreatureItem = new ItemStack(Material.ENDER_EYE, 1);
+        ItemStack nightCreatureItem = new ItemStack(Material.BLACK_STAINED_GLASS, 1);
         ItemMeta nightCreatureMeta = nightCreatureItem.getItemMeta();
         if (nightCreatureMeta != null) {
             nightCreatureMeta.setDisplayName("Night Creature");
             nightCreatureMeta.setLore(Collections.singletonList("A mysterious being of darkness."));
             nightCreatureItem.setItemMeta(nightCreatureMeta);
         }
-        inventory.setItem(6, nightCreatureItem);
+        inventory.setItem(2, nightCreatureItem);
     }
 
     public void openInventory(final Player player) {

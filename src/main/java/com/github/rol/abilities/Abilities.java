@@ -37,10 +37,9 @@ public abstract class Abilities {
         FileConfiguration config = getConfig();
         boolean enabled = config.getBoolean(configPath + ".enabled", true);
         int amplifier = config.getInt(configPath + ".amplifier");
-        int duration = config.getInt(configPath + ".duration", 200); // Default duration
 
         if (enabled && isNight) {
-            PotionEffect nightEffect = new PotionEffect(effectType, duration, amplifier, false, false, true);
+            PotionEffect nightEffect = new PotionEffect(effectType, 1000, amplifier, false, false, true);
             getPlayer().addPotionEffect(nightEffect);
         } else {
             getPlayer().removePotionEffect(effectType);
