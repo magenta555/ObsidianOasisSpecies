@@ -5,9 +5,9 @@ import com.github.rol.commands.SpeciesCommand;
 import com.github.rol.listeners.SpeciesListener;
 import com.github.rol.managers.SpeciesManager;
 
-import net.md_5.bungee.api.ChatColor;
-
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
 
@@ -21,26 +21,42 @@ public final class Rol extends JavaPlugin {
     /**
      * Called when the plugin is enabled.
      */
-    @Override
-    public void onEnable() {
-        // Plugin startup logic
-        getLogger().info(ChatColor.LIGHT_PURPLE + "Plugin has been enabled!");
+@Override
+public void onEnable() {
+    // Plugin startup logic
+    getLogger().info("Plugin has been enabled!");
 
-        // Initialize the species manager
-        speciesManager = new SpeciesManager(this);
-        speciesManager.loadSpeciesData();
+    // Initialize the species manager
+    speciesManager = new SpeciesManager(this);
+    speciesManager.loadSpeciesData();
 
-        // Register command executor
-        SpeciesCommand speciesCommand = new SpeciesCommand(this, speciesManager);
-        Objects.requireNonNull(getCommand("rol")).setExecutor(speciesCommand);
-        Objects.requireNonNull(getCommand("rol")).setTabCompleter(speciesCommand);
+    // Register command executor
+    SpeciesCommand speciesCommand = new SpeciesCommand(this, speciesManager);
+    Objects.requireNonNull(getCommand("rol")).setExecutor(speciesCommand);
+    Objects.requireNonNull(getCommand("rol")).setTabCompleter(speciesCommand);
 
-        // Register event listener
-        getServer().getPluginManager().registerEvents(new SpeciesListener(this, speciesManager), this);
+    // Register event listener
+    getServer().getPluginManager().registerEvents(new SpeciesListener(this, speciesManager), this);
 
-        // Save default config if it doesn't exist
-        saveDefaultConfig();
-    }
+    // Save default config if it doesn't exist
+    saveDefaultConfig();
+
+    // Load the tick interval from the config
+    int tickInterval = getConfig().getInt("effect-tick-interval"); // Default to 40 ticks
+
+    // Apply species effects to all online players every X ticks
+    new BukkitRunnable() {
+        @Override
+        public void run() {
+            for (Player player : getServer().getOnlinePlayers()) {
+                String species = speciesManager.getPlayerSpecies(player);
+                if (species != null) {
+                    speciesManager.applySpeciesEffects(player, species);
+                }
+            }
+        }
+    }.runTaskTimer(this, 0L, tickInterval);
+}
 
     /**
      * Called when the plugin is disabled.
@@ -48,7 +64,7 @@ public final class Rol extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        getLogger().info(ChatColor.LIGHT_PURPLE + "Plugin has been disabled!");
+        getLogger().info("Plugin has been disabled!");
 
         // Save species data
         speciesManager.saveSpeciesData();

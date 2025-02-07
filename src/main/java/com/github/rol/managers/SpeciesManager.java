@@ -4,7 +4,6 @@ package com.github.rol.managers;
 import com.github.rol.Rol;
 import com.github.rol.abilities.NightCreature;
 import com.github.rol.abilities.Vampire;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -37,7 +36,7 @@ public class SpeciesManager {
         speciesFile = new File(plugin.getDataFolder(), "species.yml");
         if (!speciesFile.exists()) {
             if (speciesFile.getParentFile().mkdirs()) {
-                plugin.getLogger().info("[Rol] Creating species.yml file.");
+                plugin.getLogger().info("Creating species.yml file.");
             }
             try {
                 if(speciesFile.createNewFile()){
@@ -115,11 +114,9 @@ public class SpeciesManager {
         saveSpeciesConfig();
     }
 
-    @SuppressWarnings("deprecation")
     public void setPlayerSpecies(Player player, String speciesName) {
         playerSpecies.put(player.getUniqueId(), speciesName.toUpperCase());
-        player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] You are now a " + speciesName + "!");
-        applySpeciesEffects(player, speciesName.toUpperCase());
+        player.sendMessage("[Rol] You are now a " + speciesName + "!");
         saveSpeciesData(); // Save immediately after setting species
     }
 
@@ -162,7 +159,7 @@ public class SpeciesManager {
             }
             getSpeciesConfig().load(speciesFile); // Load config *after* validation
         } catch (FileNotFoundException e) {
-            plugin.getLogger().severe("[Rol] species.yml not found during validation!");
+            plugin.getLogger().severe("species.yml not found during validation!");
             e.printStackTrace();
         } catch (IOException | InvalidConfigurationException e) {
             plugin.getLogger().severe("[Rol] Error loading species.yml during validation!");

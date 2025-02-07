@@ -5,7 +5,6 @@ import com.github.rol.Rol;
 import com.github.rol.abilities.NightCreature;
 import com.github.rol.abilities.Vampire;
 import com.github.rol.managers.SpeciesManager;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -64,7 +63,7 @@ public class SpeciesListener implements Listener {
         Player player = (Player) event.getWhoClicked();
         String inventoryName = event.getView().getTitle();
 
-        if (inventoryName.equals(ChatColor.DARK_PURPLE + "Choose Your Species")) {
+        if (inventoryName.equals("Choose Your Species")) {
             event.setCancelled(true);
 
             ItemStack clickedItem = event.getCurrentItem();
@@ -120,7 +119,6 @@ public class SpeciesListener implements Listener {
      *
      * @param event The EntityDamageEvent.
      */
-    @SuppressWarnings("deprecation")
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
@@ -132,7 +130,7 @@ public class SpeciesListener implements Listener {
             // Burn in sunlight like a zombie
             if (player.getWorld().getTime() > 0 && player.getWorld().getTime() < 12300) {
                 player.setFireTicks(100); // Set fire ticks
-                player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] The sun burns your skin!");
+                player.sendMessage("[Rol] The sun burns your skin!");
             }
         }
     }

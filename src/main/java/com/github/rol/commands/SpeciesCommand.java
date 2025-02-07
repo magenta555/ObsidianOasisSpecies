@@ -4,7 +4,6 @@ package com.github.rol.commands;
 import com.github.rol.Rol;
 import com.github.rol.menus.SpeciesMenu;
 import com.github.rol.managers.SpeciesManager;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -45,7 +44,6 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
      * @param args    Passed command arguments
      * @return true if a valid command, otherwise false
      */
-    @SuppressWarnings("deprecation")
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (sender instanceof Player) {
@@ -69,27 +67,27 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
                             String speciesName = args[1].toUpperCase();
                             if (speciesManager.isValidSpecies(speciesName)) {
                                 speciesManager.setPlayerSpecies(target, speciesName);
-                                player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] Set " + target.getName() + "'s species to " + speciesName + ".");
-                                target.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] Your species has been set to " + speciesName + ".");
+                                player.sendMessage("Set " + target.getName() + "'s species to " + speciesName + ".");
+                                target.sendMessage("Your species has been set to " + speciesName + ".");
                             } else {
-                                player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] Invalid species type!");
+                                player.sendMessage("Invalid species type!");
                             }
                         } else {
-                            player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] Player not found!");
+                            player.sendMessage("Player not found!");
                         }
                     } else {
-                        player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] Usage: /rol setspecies <species> <player>");
+                        player.sendMessage("Usage: /rol setspecies <species> <player>");
                     }
                 } else {
-                    player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] You do not have permission to use this command.");
+                    player.sendMessage("You do not have permission to use this command.");
                 }
                 return true;
             } else {
-                player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] Usage: /rol species");
+                player.sendMessage("Usage: /rol species");
                 return true;
             }
         } else {
-            sender.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] This command can only be used by players.");
+            sender.sendMessage("This command can only be used by players.");
             return true;
         }
     }

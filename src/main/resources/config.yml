@@ -9,10 +9,13 @@ vampire:
     particleDensity: 0.5 # Density of redstone dust particles during teleport
   nightVision:
     enabled: true #Enables night vision when the player is a vampire and during the night
+    amplifier: 1
   regeneration:
     enabled: true #Enables regeneration when the player is a vampire and during the night
+    amplifier: 2
   strength:
     enabled: true #Enables strength when the player is a vampire and during the night
+    amplifier: 7
   maxHealth: 40 # Maximum health (hearts) for vampires
 
 # Night Creature settings
@@ -24,3 +27,5 @@ nightcreature:
   strength:
     enabled: true #Enables strength when the player is a night creature and during the night
   maxHealth: 30 # Maximum health (hearts) for night creatures
+
+effect-tick-interval: 40  # The interval in ticks (20 ticks = 1 second) at which species effects are applied.
