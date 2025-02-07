@@ -1,4 +1,3 @@
-// SpeciesCommand.java
 package com.github.rol.commands;
 
 import com.github.rol.Rol;
@@ -16,46 +15,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Handles the /rol species and /rol setspecies commands.
- */
 public class SpeciesCommand implements CommandExecutor, TabCompleter {
 
     private final Rol plugin;
     private final SpeciesManager speciesManager;
 
-    /**
-     * Constructor for the SpeciesCommand class.
-     *
-     * @param plugin         The main plugin instance.
-     * @param speciesManager The species manager instance.
-     */
     public SpeciesCommand(Rol plugin, SpeciesManager speciesManager) {
         this.plugin = plugin;
         this.speciesManager = speciesManager;
     }
 
-    /**
-     * Executes the given command, returning its success.
-     *
-     * @param sender  Source of the command
-     * @param command Command which was executed
-     * @param label   Alias of the command which was used
-     * @param args    Passed command arguments
-     * @return true if a valid command, otherwise false
-     */
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
             if (args.length == 0) {
-                // Open species menu
                 SpeciesMenu speciesMenu = new SpeciesMenu(plugin, speciesManager);
                 speciesMenu.openInventory(player);
                 return true;
             } else if (args[0].equalsIgnoreCase("species")) {
-                // Open species menu
                 SpeciesMenu speciesMenu = new SpeciesMenu(plugin, speciesManager);
                 speciesMenu.openInventory(player);
                 return true;
@@ -92,19 +71,6 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
         }
     }
 
-    /**
-     * Requests a list of possible completions for a command argument.
-     *
-     * @param sender  Source of the command.  For players tab-completing a
-     *                command inside of a command block, this will be the player, not
-     *                the command block.
-     * @param command Command which was executed
-     * @param alias   The alias used
-     * @param args    The arguments passed to the command, including final
-     *                partial argument to be completed and command label
-     * @return A List of possible completions for the final argument, or null
-     * to default to the command executor.
-     */
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (args.length == 1) {

@@ -1,4 +1,3 @@
-// VampireAbility.java
 package com.github.rol.abilities;
 
 import com.github.rol.Rol;
@@ -19,32 +18,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * Implements the vampire's teleport and passive abilities.
- */
 public class Vampire {
 
     private final Rol plugin;
     private final Player player;
-    private final Color vampireRed = Color.fromRGB(139, 0, 0); // Dark red for vampire feel
+    private final Color vampireRed = Color.fromRGB(139, 0, 0);
 
-    // Cooldown handling
-    private static final Map<UUID, Long> cooldowns = new HashMap<>(); // Static to persist across instances
+    private static final Map<UUID, Long> cooldowns = new HashMap<>();
     private static long cooldownSeconds;
     private static double teleportDistance;
     private static double particleDensity;
     private static int particleCount;
 
-    /**
-     * Constructor for the Vampire class.
-     *
-     * @param plugin The main plugin instance.
-     * @param player The player using the ability.
-     */
     public Vampire(Rol plugin, Player player) {
         this.plugin = plugin;
         this.player = player;
-        loadConfig(); // Load configuration values
+        loadConfig();
     }
 
     private void loadConfig() {
@@ -55,13 +44,9 @@ public class Vampire {
         particleCount = config.getInt("vampire.teleport.particleCount");
     }
 
-    /**
-     * Activates the vampire's teleport ability.
-     */
     public void activateVampireAbility() {
         UUID playerId = player.getUniqueId();
 
-        // Check cooldown
         if (isOnCooldown(playerId)) {
             long timeLeft = getRemainingCooldown(playerId);
             player.sendMessage("[Rol] Ability is on cooldown. " + timeLeft + " seconds remaining.");
@@ -72,7 +57,6 @@ public class Vampire {
         Vector direction = originalLocation.getDirection();
         Location teleportLocation = originalLocation.clone().add(direction.multiply(teleportDistance));
 
-        // Safety check: Ensure the destination has air
         Block targetBlock = teleportLocation.getBlock();
         Block aboveTargetBlock = teleportLocation.clone().add(0, 1, 0).getBlock();
 
@@ -81,24 +65,19 @@ public class Vampire {
             return;
         }
 
-        // Teleport the player
         player.teleport(teleportLocation);
 
-        // Optional: Rotate the player *after* teleport
         new BukkitRunnable() {
             @Override
             public void run() {
                 player.setRotation(player.getLocation().getYaw() + 180, player.getLocation().getPitch());
             }
-        }.runTaskLater(plugin, 1L); // Slight delay to ensure correct location
+        }.runTaskLater(plugin, 1L);
 
-        // Spawn particles at both locations
         spawnRedstoneDustParticles(originalLocation, teleportLocation);
 
-        // Play sound
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1.0f, 1.0f);
 
-        // Start cooldown
         startCooldown(playerId);
     }
 
@@ -119,12 +98,6 @@ public class Vampire {
         return 0;
     }
 
-    /**
-     * Spawns redstone dust particles between two locations.
-     *
-     * @param startLocation The starting location.
-     * @param endLocation   The ending location.
-     */
     private void spawnRedstoneDustParticles(Location startLocation, Location endLocation) {
         Vector direction = endLocation.toVector().subtract(startLocation.toVector()).normalize();
         double distance = startLocation.distance(endLocation);
@@ -148,25 +121,18 @@ public class Vampire {
         }.runTaskTimer(plugin, 0, 1);
     }
 
-    /**
-     * Applies vampire-specific potion effects based on the time of day.
-     */
     public void applyVampireEffects() {
         FileConfiguration config = plugin.getConfig();
 
         boolean isNight = isNightTime(player);
 
-        // Night Vision
         applyPotionEffect(PotionEffectType.NIGHT_VISION, "vampire.nightVision", isNight);
 
-        // Regeneration
         applyPotionEffect(PotionEffectType.REGENERATION, "vampire.regeneration", isNight);
 
-        // Strength
         applyPotionEffect(PotionEffectType.STRENGTH, "vampire.strength", isNight);
 
-        // Max Health (Health boost is better)
-         applyMaxHealth(config.getDouble("vampire.maxHealth"));
+        applyMaxHealth(config.getDouble("vampire.maxHealth"));
     }
 
     private void applyPotionEffect(PotionEffectType effectType, String configPath, boolean isNight) {
@@ -178,31 +144,18 @@ public class Vampire {
             PotionEffect nightEffect = new PotionEffect(effectType, 20, amplifier, false, false, true);
             player.addPotionEffect(nightEffect);
         } else {
-            //remove effect if it exists
             player.removePotionEffect(effectType);
         }
     }
 
-
-    /**
-     * Applies max health and ensures player's health is within bounds
-     */
     public void applyMaxHealth(double maxHealth) {
         double healthScale = maxHealth;
 
-        //Set the players health scale
         player.setHealthScale(healthScale);
 
-        //Set the players health, and ensure the players health is not above the max health scale
-         player.setHealth(Math.min(player.getHealth(), healthScale));
+        player.setHealth(Math.min(player.getHealth(), healthScale));
     }
 
-    /**
-     * Checks if it's night time in the player's world.
-     *
-     * @param player The player.
-     * @return True if it's night time, false otherwise.
-     */
     private boolean isNightTime(Player player) {
         long time = player.getWorld().getTime();
         return time > 12300 && time < 23850;

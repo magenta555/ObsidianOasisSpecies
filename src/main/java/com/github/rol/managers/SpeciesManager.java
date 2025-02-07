@@ -1,4 +1,3 @@
-// SpeciesManager.java
 package com.github.rol.managers;
 
 import com.github.rol.Rol;
@@ -28,7 +27,7 @@ public class SpeciesManager {
     public SpeciesManager(Rol plugin) {
         this.plugin = plugin;
         createSpeciesFile();
-        reloadSpeciesConfig(); // Load, scan for errors, save defaults if needed
+        reloadSpeciesConfig();
         loadSpeciesData();
     }
 
@@ -52,21 +51,16 @@ public class SpeciesManager {
         }
     }
 
-
-    // Custom reload to include error scanning
     public void reloadSpeciesConfig() {
         speciesConfig = YamlConfiguration.loadConfiguration(speciesFile);
 
-        // Load defaults from the bundled resource (if any)
         try {
-           scanSpeciesConfig(); // Scan for YAML errors/tabs
+           scanSpeciesConfig();
         } catch (IllegalArgumentException e) {
             plugin.getLogger().severe("[Rol] Invalid config format in species.yml: " + e.getMessage());
-            // Optionally handle:  backup, reset to defaults, disable the plugin, etc.
         }
     }
 
-    // Custom saveConfig
     public void saveSpeciesConfig() {
         try {
             speciesConfig.save(speciesFile);
@@ -107,7 +101,6 @@ public class SpeciesManager {
         }
     }
 
-
     public void saveSpeciesData() {
         ConfigurationSection speciesSection = getSpeciesConfig().createSection("species");
         playerSpecies.forEach((uuid, species) -> speciesSection.set(uuid.toString(), species));
@@ -117,7 +110,7 @@ public class SpeciesManager {
     public void setPlayerSpecies(Player player, String speciesName) {
         playerSpecies.put(player.getUniqueId(), speciesName.toUpperCase());
         player.sendMessage("[Rol] You are now a " + speciesName + "!");
-        saveSpeciesData(); // Save immediately after setting species
+        saveSpeciesData();
     }
 
     public String getPlayerSpecies(Player player) {
@@ -143,7 +136,6 @@ public class SpeciesManager {
         }
     }
 
-    // YAML Format Validation (Tab Check)
     public void scanSpeciesConfig() throws IllegalArgumentException {
         Scanner scan = null;
         try {
@@ -157,7 +149,7 @@ public class SpeciesManager {
                     throw new IllegalArgumentException(error);
                 }
             }
-            getSpeciesConfig().load(speciesFile); // Load config *after* validation
+            getSpeciesConfig().load(speciesFile);
         } catch (FileNotFoundException e) {
             plugin.getLogger().severe("species.yml not found during validation!");
             e.printStackTrace();

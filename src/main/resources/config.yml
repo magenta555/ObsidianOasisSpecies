@@ -1,34 +1,29 @@
-# config.yml
-# Configuration file for the Rol plugin
-
-# Vampire settings
 vampire:
   teleport:
-    cooldown: 20 # Cooldown in seconds for the teleport ability
-    distance: 5.0 # Teleport distance in blocks
-    particleDensity: 0.5 # Density of redstone dust particles during teleport
+    cooldown: 20
+    distance: 5.0
+    particleDensity: 0.5
     particleCount: 20
   nightVision:
-    enabled: true #Enables night vision when the player is a vampire and during the night
+    enabled: true
     amplifier: 1
   regeneration:
-    enabled: true #Enables regeneration when the player is a vampire and during the night
+    enabled: true
     amplifier: 2
   strength:
-    enabled: true #Enables strength when the player is a vampire and during the night
+    enabled: true
     amplifier: 7
-  maxHealth: 80 # Maximum health (half-hearts) for vampires
+  maxHealth: 80
 
-# Night Creature settings
 nightcreature:
   fireball:
-    cooldown: 20 # Cooldown in seconds for the fireball ability
+    cooldown: 15
   nightVision:
-    enabled: true #Enables night vision when the player is a night creature and during the night
+    enabled: true
     amplifier: 1
   strength:
-    enabled: true #Enables strength when the player is a night creature and during the night
+    enabled: true
     amplifier: 9
-  maxHealth: 60 # Maximum health (half-hearts) for night creatures
+  maxHealth: 60
 
-effect-tick-interval: 40  # The interval in ticks (20 ticks = 1 second) at which species effects are applied.
+effect-tick-interval: 40
