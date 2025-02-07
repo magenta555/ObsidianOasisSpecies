@@ -1,10 +1,8 @@
-// SpeciesCommand.java
 package com.github.rol.commands;
 
 import com.github.rol.Rol;
 import com.github.rol.menus.SpeciesMenu;
 import com.github.rol.managers.SpeciesManager;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,114 +14,97 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-/**
- * Handles the /rol species and /rol setspecies commands.
- */
 public class SpeciesCommand implements CommandExecutor, TabCompleter {
 
     private final Rol plugin;
     private final SpeciesManager speciesManager;
+    private final String noSpeciesPermMessage = "You do not have permission to use the /species command.";
+    private final String noSetSpeciesPermMessage = "You do not have permission to use the /setspecies command.";
+    private final String invalidSpeciesMessage = "Invalid species type!";
+    private final String playerNotFoundMessage = "Player not found!";
+    private final String speciesSetMessage = "Set %s's species to %s.";
+    private final String yourSpeciesSetMessage = "Your species has been set to %s.";
+    private final String usageSetSpeciesMessage = "Usage: /setspecies <species> <player>";
+    private final String onlyPlayersMessage = "This command can only be used by players.";
+    private final String onlySetSpeciesOnceMessage = "You can only set your species once! Please contact an admin for help!";
 
-    /**
-     * Constructor for the SpeciesCommand class.
-     *
-     * @param plugin         The main plugin instance.
-     * @param speciesManager The species manager instance.
-     */
     public SpeciesCommand(Rol plugin, SpeciesManager speciesManager) {
         this.plugin = plugin;
         this.speciesManager = speciesManager;
     }
 
-    /**
-     * Executes the given command, returning its success.
-     *
-     * @param sender  Source of the command
-     * @param command Command which was executed
-     * @param label   Alias of the command which was used
-     * @param args    Passed command arguments
-     * @return true if a valid command, otherwise false
-     */
-    @SuppressWarnings("deprecation")
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-
-            if (args.length == 0) {
-                // Open species menu
-                SpeciesMenu speciesMenu = new SpeciesMenu(plugin, speciesManager);
-                speciesMenu.openInventory(player);
-                return true;
-            } else if (args[0].equalsIgnoreCase("species")) {
-                // Open species menu
-                SpeciesMenu speciesMenu = new SpeciesMenu(plugin, speciesManager);
-                speciesMenu.openInventory(player);
-                return true;
-            } else if (args[0].equalsIgnoreCase("setspecies")) {
-                if (player.hasPermission("rol.setspecies")) {
-                    if (args.length == 3) {
-                        Player target = plugin.getServer().getPlayer(args[2]);
-                        if (target != null) {
-                            String speciesName = args[1].toUpperCase();
-                            if (speciesManager.isValidSpecies(speciesName)) {
-                                speciesManager.setPlayerSpecies(target, speciesName);
-                                player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] Set " + target.getName() + "'s species to " + speciesName + ".");
-                                target.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] Your species has been set to " + speciesName + ".");
-                            } else {
-                                player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] Invalid species type!");
-                            }
-                        } else {
-                            player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] Player not found!");
-                        }
-                    } else {
-                        player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] Usage: /rol setspecies <species> <player>");
-                    }
-                } else {
-                    player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] You do not have permission to use this command.");
-                }
-                return true;
-            } else {
-                player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] Usage: /rol species");
-                return true;
-            }
-        } else {
-            sender.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] This command can only be used by players.");
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(onlyPlayersMessage);
             return true;
         }
+
+        Player player = (Player) sender;
+
+        if (command.getName().equalsIgnoreCase("species")) {
+            if (!player.hasPermission("rol.species")) {
+                player.sendMessage(noSpeciesPermMessage);
+                return true;
+            }
+
+            try {
+                speciesManager.isValidSpecies(speciesManager.getPlayerSpecies(player));
+                player.sendMessage(onlySetSpeciesOnceMessage);
+                return true;
+            } catch (Exception e) {
+                new SpeciesMenu(plugin, speciesManager).openInventory(player);
+                return true;
+            }
+        }
+
+        if (command.getName().equalsIgnoreCase("setspecies")) {
+            return handleSetSpeciesCommand(player, args);
+        }
+
+        return false; // Should not happen, but good practice
     }
 
-    /**
-     * Requests a list of possible completions for a command argument.
-     *
-     * @param sender  Source of the command.  For players tab-completing a
-     *                command inside of a command block, this will be the player, not
-     *                the command block.
-     * @param command Command which was executed
-     * @param alias   The alias used
-     * @param args    The arguments passed to the command, including final
-     *                partial argument to be completed and command label
-     * @return A List of possible completions for the final argument, or null
-     * to default to the command executor.
-     */
+    private boolean handleSetSpeciesCommand(Player player, String[] args) {
+        if (!player.hasPermission("rol.setspecies")) {
+            player.sendMessage(noSetSpeciesPermMessage);
+            return true;
+        }
+
+        if (args.length != 2) {
+            player.sendMessage(usageSetSpeciesMessage);
+            return true;
+        }
+
+        Optional.ofNullable(plugin.getServer().getPlayerExact(args[1])).ifPresentOrElse(target -> {
+            String speciesName = args[0].toUpperCase();
+            if (speciesManager.isValidSpecies(speciesName)) {
+                speciesManager.setPlayerSpecies(target, speciesName);
+                player.sendMessage(String.format(speciesSetMessage, target.getName(), speciesName));
+                target.sendMessage(String.format(yourSpeciesSetMessage, speciesName));
+            } else {
+                player.sendMessage(invalidSpeciesMessage);
+            }
+        }, () -> player.sendMessage(playerNotFoundMessage));
+
+        return true;
+    }
+
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
-        if (args.length == 1) {
-            List<String> completions = new ArrayList<>();
-            completions.add("species");
-            completions.add("setspecies");
-            return StringUtil.copyPartialMatches(args[0], completions, new ArrayList<>());
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("setspecies")) {
-            List<String> completions = new ArrayList<>();
-            completions.add("vampire");
-            completions.add("human");
-            completions.add("nightcreature");
-            return StringUtil.copyPartialMatches(args[1], completions, new ArrayList<>());
-        } else if (args.length == 3 && args[0].equalsIgnoreCase("setspecies")) {
-            List<String> completions = new ArrayList<>();
-            plugin.getServer().getOnlinePlayers().forEach(player -> completions.add(player.getName()));
-            return StringUtil.copyPartialMatches(args[2], completions, new ArrayList<>());
+        if (command.getName().equalsIgnoreCase("setspecies")) {
+            if (!sender.hasPermission("rol.setspecies")) {
+                return Collections.emptyList(); // No completions if no permission
+            }
+            if (args.length == 1) {
+                return StringUtil.copyPartialMatches(args[0], speciesManager.getAllSpecies(), new ArrayList<>());
+            } else if (args.length == 2) {
+                List<String> playerNames = new ArrayList<>();
+                plugin.getServer().getOnlinePlayers().forEach(onlinePlayer -> playerNames.add(onlinePlayer.getName()));
+                return StringUtil.copyPartialMatches(args[1], playerNames, new ArrayList<>());
+            }
         }
         return Collections.emptyList();
     }

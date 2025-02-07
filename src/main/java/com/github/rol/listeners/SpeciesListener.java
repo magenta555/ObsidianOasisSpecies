@@ -1,61 +1,52 @@
-// SpeciesListener.java
 package com.github.rol.listeners;
 
 import com.github.rol.Rol;
 import com.github.rol.abilities.NightCreature;
 import com.github.rol.abilities.Vampire;
 import com.github.rol.managers.SpeciesManager;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.block.Action;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.block.Block;
+import org.bukkit.Location;
 
-/**
- * Handles event listening for species-specific behaviors.
- */
 public class SpeciesListener implements Listener {
 
     private final Rol plugin;
     private final SpeciesManager speciesManager;
 
-    /**
-     * Constructor for the SpeciesListener class.
-     *
-     * @param plugin         The main plugin instance.
-     * @param speciesManager The species manager instance.
-     */
     public SpeciesListener(Rol plugin, SpeciesManager speciesManager) {
         this.plugin = plugin;
         this.speciesManager = speciesManager;
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player player : plugin.getServer().getOnlinePlayers()) {
+                    checkSunlight(player);
+                }
+            }
+        }.runTaskTimer(plugin, 0L, 20L);
     }
 
-    /**
-     * Called when a player joins the server.
-     *
-     * @param event The PlayerJoinEvent.
-     */
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         String species = speciesManager.getPlayerSpecies(player);
 
-        // Apply species effects if the player has a species
         if (species != null) {
             speciesManager.applySpeciesEffects(player, species);
         }
     }
 
-    /**
-     * Called when a player clicks in an inventory.
-     *
-     * @param event The InventoryClickEvent.
-     */
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
@@ -64,18 +55,18 @@ public class SpeciesListener implements Listener {
         Player player = (Player) event.getWhoClicked();
         String inventoryName = event.getView().getTitle();
 
-        if (inventoryName.equals(ChatColor.DARK_PURPLE + "Choose Your Species")) {
+        if (inventoryName.equals("Choose Your Species")) {
             event.setCancelled(true);
 
             ItemStack clickedItem = event.getCurrentItem();
             if (clickedItem == null || !clickedItem.hasItemMeta()) return;
 
             String speciesName = null;
-            if (clickedItem.getType() == Material.PLAYER_HEAD && clickedItem.getItemMeta().getDisplayName().contains("Human")) {
+            if (clickedItem.getItemMeta().getDisplayName().contains("Human")) {
                 speciesName = "HUMAN";
-            } else if (clickedItem.getType() == Material.RED_STAINED_GLASS && clickedItem.getItemMeta().getDisplayName().contains("Vampire")) {
+            } else if (clickedItem.getItemMeta().getDisplayName().contains("Vampire")) {
                 speciesName = "VAMPIRE";
-            } else if (clickedItem.getType() == Material.ENDER_EYE && clickedItem.getItemMeta().getDisplayName().contains("Night Creature")) {
+            } else if (clickedItem.getItemMeta().getDisplayName().contains("Night Creature")) {
                 speciesName = "NIGHTCREATURE";
             }
 
@@ -86,11 +77,6 @@ public class SpeciesListener implements Listener {
         }
     }
 
-    /**
-     * Called when a player interacts with the world.
-     *
-     * @param event The PlayerInteractEvent.
-     */
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -98,16 +84,14 @@ public class SpeciesListener implements Listener {
 
         if (species != null) {
             if (species.equalsIgnoreCase("VAMPIRE")) {
-                // Vampire Ability Activation
-                if (event.getAction().toString().contains("RIGHT_CLICK") &&
+                if (event.getAction() == Action.RIGHT_CLICK_AIR &&
                         player.getInventory().getItemInMainHand().getType().toString().contains("SWORD")) {
                     Vampire vampire = new Vampire(plugin, player);
                     vampire.activateVampireAbility();
                 }
             } else if (species.equalsIgnoreCase("NIGHTCREATURE")) {
-                // Night Creature Ability Activation
-                if (event.getAction().toString().contains("RIGHT_CLICK") &&
-                        player.getInventory().getItemInMainHand().getType() == Material.AIR) {
+                if (event.getAction() == Action.RIGHT_CLICK_AIR &&
+                        player.getInventory().getItemInMainHand().getType() == Material.BLAZE_ROD) {
                     NightCreature nightCreature = new NightCreature(plugin, player);
                     nightCreature.activateNightCreatureAbility();
                 }
@@ -115,25 +99,37 @@ public class SpeciesListener implements Listener {
         }
     }
 
-    /**
-     * Called when an entity is damaged.
-     *
-     * @param event The EntityDamageEvent.
-     */
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onEntityDamage(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player)) return;
-
-        Player player = (Player) event.getEntity();
+    private void checkSunlight(Player player) {
         String species = speciesManager.getPlayerSpecies(player);
 
         if (species != null && (species.equalsIgnoreCase("VAMPIRE") || species.equalsIgnoreCase("NIGHTCREATURE"))) {
-            // Burn in sunlight like a zombie
-            if (player.getWorld().getTime() > 0 && player.getWorld().getTime() < 12300) {
-                player.setFireTicks(100); // Set fire ticks
-                player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] The sun burns your skin!");
+            if (isDaytime(player.getWorld().getTime()) && !isUnderSunlight(player)) {
+                player.setFireTicks(40);
             }
         }
+    }
+
+    private boolean isDaytime(long time) {
+        return time > 0 && time < 12300;
+    }
+
+    private boolean isUnderSunlight(Player player) {
+        Location location = player.getLocation();
+        World world = player.getWorld();
+
+        int highestBlockY = world.getHighestBlockYAt(location);
+
+        if (highestBlockY > location.getY()) {
+            return true;
+        }
+
+         for (int y = location.getBlockY() + 1; y <= world.getMaxHeight(); y++) {
+            Block block = world.getBlockAt(location.getBlockX(), y, location.getBlockZ());
+            if (block.getType().isSolid()) {
+                return true;
+            }
+        }
+         
+        return false;
     }
 }

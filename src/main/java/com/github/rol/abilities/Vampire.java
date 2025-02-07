@@ -1,7 +1,8 @@
-// VampireAbility.java
+// Vampire.java
 package com.github.rol.abilities;
 
 import com.github.rol.Rol;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Particle.DustOptions;
@@ -9,89 +10,76 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-import org.bukkit.Color;
+import java.util.UUID;
 
-/**
- * Implements the vampire's teleport ability.
- */
-public class Vampire {
+public class Vampire extends Abilities {
 
     private final Rol plugin;
     private final Player player;
-    private long cooldownEnd = 0;
+    private final Color vampireRed = Color.fromRGB(139, 0, 0);
 
-    /**
-     * Constructor for the VampireAbility class.
-     *
-     * @param plugin The main plugin instance.
-     * @param player The player using the ability.
-     */
+    private static long cooldownSeconds;
+    private static double teleportDistance;
+    private static double particleDensity;
+    private static int particleCount;
+
     public Vampire(Rol plugin, Player player) {
         this.plugin = plugin;
         this.player = player;
+        loadConfig();
     }
 
-    /**
-     * Activates the teleport ability for the vampire.
-     */
-    @SuppressWarnings("deprecation")
-    public void activateVampireAbility() {
+    private void loadConfig() {
         FileConfiguration config = plugin.getConfig();
-        long cooldownSeconds = config.getLong("vampire.teleport.cooldown", 20);
+        cooldownSeconds = config.getLong("vampire.teleport.cooldown");
+        teleportDistance = config.getDouble("vampire.teleport.distance");
+        particleDensity = config.getDouble("vampire.teleport.particleDensity");
+        particleCount = config.getInt("vampire.teleport.particleCount");
+    }
 
-        // Check cooldown
-        if (System.currentTimeMillis() < cooldownEnd) {
-            long timeLeft = (cooldownEnd - System.currentTimeMillis()) / 1000;
-            player.sendMessage(org.bukkit.ChatColor.LIGHT_PURPLE + "[Rol] Teleport ability is on cooldown. " + timeLeft + " seconds remaining.");
+    public void activateVampireAbility() {
+        UUID playerId = player.getUniqueId();
+
+        if (isOnCooldown(playerId)) {
+            long remainingCooldown = getRemainingCooldown(playerId);
+            player.sendMessage("[Rol] Vampire Teleport Cooldown: " + remainingCooldown);
             return;
         }
 
-        // Calculate teleport location
-        double teleportDistance = config.getDouble("vampire.teleport.distance", 5.0);
         Location originalLocation = player.getLocation();
         Vector direction = originalLocation.getDirection();
-        Location teleportLocation = originalLocation.add(direction.multiply(teleportDistance));
+        Location teleportLocation = originalLocation.clone().add(direction.multiply(teleportDistance));
 
-        // Safety check: Ensure the destination has air
         Block targetBlock = teleportLocation.getBlock();
-        Block aboveTargetBlock = teleportLocation.clone().add(0, 1, 0).getBlock(); // Check block above
+        Block aboveTargetBlock = teleportLocation.clone().add(0, 1, 0).getBlock();
+
         if (!targetBlock.isPassable() || !aboveTargetBlock.isPassable()) {
-            player.sendMessage(org.bukkit.ChatColor.LIGHT_PURPLE + "[Rol] Teleport destination is not safe.");
             return;
         }
 
-        // Teleport the player
         player.teleport(teleportLocation);
-        player.setRotation(player.getLocation().getYaw() + 180, player.getLocation().getPitch());
 
-        // Spawn particles
-        spawnRedstoneDustParticles(originalLocation);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.setRotation(player.getLocation().getYaw() + 180, player.getLocation().getPitch());
+            }
+        }.runTaskLater(plugin, 1L);
 
-        // Play sound
+        spawnRedstoneDustParticles(originalLocation, teleportLocation);
+
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1.0f, 1.0f);
 
-        // Set cooldown
-        cooldownEnd = System.currentTimeMillis() + (cooldownSeconds * 1000);
+        startCooldown(playerId, cooldownSeconds);
     }
 
-    /**
-     * Spawns redstone dust particles along the teleport path.
-     *
-     * @param startLocation The location where the teleport starts.
-     */
-    private void spawnRedstoneDustParticles(Location startLocation) {
-        FileConfiguration config = plugin.getConfig();
-        double particleDensity = config.getDouble("vampire.teleport.particleDensity", 0.5);
+    private void spawnRedstoneDustParticles(Location startLocation, Location endLocation) {
+        Vector direction = endLocation.toVector().subtract(startLocation.toVector()).normalize();
+        double distance = startLocation.distance(endLocation);
 
-        // Calculate the vector between start and end location
-        Location endLocation = player.getLocation();
-        Vector direction = endLocation.toVector().subtract(startLocation.toVector());
-        double distance = direction.length();
-        direction.normalize();
-
-        // Spawn particles along the path
         new BukkitRunnable() {
             double travelled = 0;
 
@@ -103,50 +91,34 @@ public class Vampire {
                 }
 
                 Location particleLocation = startLocation.clone().add(direction.clone().multiply(travelled));
+                DustOptions dustOptions = new DustOptions(vampireRed, 1.0f);
 
-                // Create DustOptions for the DUST particle
-                Color color = Color.RED; // You can change the color here
-                float size = 1.0f; // Adjust the size as needed
-                DustOptions dustOptions = new DustOptions(color, size);
-
-                player.getWorld().spawnParticle(Particle.DUST, particleLocation, 5, 0, 0, 0, 1, dustOptions);
+                player.getWorld().spawnParticle(Particle.DUST, particleLocation, particleCount, 0, 0, 0, dustOptions);
                 travelled += particleDensity;
             }
         }.runTaskTimer(plugin, 0, 1);
     }
 
     public void applyVampireEffects() {
-        FileConfiguration config = plugin.getConfig();
+        boolean isNight = isNightTime(player);
 
-        // Night Vision (only at night)
-        boolean nightVisionEnabled = config.getBoolean("vampire.nightVision.enabled", true);
-        if (nightVisionEnabled && isNightTime(player)) {
-            // Apply the night vision effect here
-            // You can use PotionEffect or custom methods
-        }
+        applyPotionEffect(PotionEffectType.NIGHT_VISION, "vampire.nightVision", isNight);
 
-        // Regeneration (only at night)
-        boolean regenerationEnabled = config.getBoolean("vampire.regeneration.enabled", true);
-        if (regenerationEnabled && isNightTime(player)) {
-            // Apply the regeneration effect here
-            // You can use PotionEffect or custom methods
-        }
+        applyPotionEffect(PotionEffectType.REGENERATION, "vampire.regeneration", isNight);
 
-        // Strength (only at night)
-        boolean strengthEnabled = config.getBoolean("vampire.strength.enabled", true);
-        if (strengthEnabled && isNightTime(player)) {
-            // Apply the strength effect here
-            // You can use PotionEffect or custom methods
-        }
+        applyPotionEffect(PotionEffectType.STRENGTH, "vampire.strength", isNight);
 
-        // Max Health
-        double maxHealth = config.getDouble("vampire.maxHealth", 40); // Default to 40 hearts
-        player.setHealthScale(maxHealth);
-        player.setHealth(Math.min(player.getHealth(), maxHealth)); // Ensure current health doesn't exceed the max
+        double maxHealth = plugin.getConfig().getDouble("vampire.maxHealth");
+        applyMaxHealth(maxHealth);
     }
 
-    private boolean isNightTime(Player player) {
-        long time = player.getWorld().getTime();
-        return time > 12300 && time < 23850;
+    @Override
+    protected FileConfiguration getConfig() {
+        return plugin.getConfig();
+    }
+
+    @Override
+    protected Player getPlayer() {
+        return player;
     }
 }

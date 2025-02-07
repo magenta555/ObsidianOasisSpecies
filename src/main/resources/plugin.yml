@@ -1,27 +1,24 @@
 name: Rol
 version: 0
 main: com.github.rol.Rol
-description: Roleplaying plugin for Minecraft servers!
-author: magenta555
-website: https://github.com/magenta555/rol
 api-version: 1.21.4
+author: magenta555
+website: github.com/magenta555/rol
 commands:
-  rol:
-    description: Display plugin information or use all Rol commands!
-    permission: rol.rol
-    permission-message: §d[Rol] You do not have permission to use this command.
-    usage: /rol <species|class|etc.> # Added a placeholder for subcommands
+  species:
+    description: Opens the species menu.
+    usage: /species
+    permission: rol.species
+    permission-message: You need the permission rol.species!
   setspecies:
-    description: Set a player's species.
+    description: Sets a player's species.
+    usage: /setspecies <species> <player>
     permission: rol.setspecies
-    permission-message: §d[Rol] You do not have permission to use this command.
-    usage: /rol setspecies <species> <player>
+    permission-message: You need the permission rol.setspecies!
 permissions:
-  rol.rol:
-    description: Allows the player to use the base /rol command and access subcommands.
-    default: op
-    children:
-      rol.species: true # Grant rol.species if rol.rol is granted
+  rol.species:
+    description: Allows players to use the /species command
+    default: true
   rol.setspecies:
-    description: Allows the player to use the /rol setspecies command.
+    description: Allows players to use the /setspecies command
     default: op
