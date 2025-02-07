@@ -1,4 +1,3 @@
-// NightCreatureAbility.java
 package com.github.rol.abilities;
 
 import com.github.rol.Rol;
@@ -9,6 +8,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 /**
  * Implements the night creature's abilities, including a fireball and night-time effects.
  */
@@ -16,7 +19,11 @@ public class NightCreature {
 
     private final Rol plugin;
     private final Player player;
-    private long cooldownEnd = 0; // Stores the timestamp when the fireball ability will be available again.
+
+    // Cooldown handling (copied from Vampire)
+    private static final Map<UUID, Long> cooldowns = new HashMap<>(); // Static to persist across instances
+    private static long cooldownSeconds; //This is now static
+    //private long cooldownEnd = 0; // Stores the timestamp when the fireball ability will be available again. (no longer need this)
 
     /**
      * Constructor for the NightCreature class.
@@ -27,6 +34,12 @@ public class NightCreature {
     public NightCreature(Rol plugin, Player player) {
         this.plugin = plugin;
         this.player = player;
+        loadConfig(); //Load configuration values
+    }
+
+    private void loadConfig() {
+        FileConfiguration config = plugin.getConfig();
+        cooldownSeconds = config.getLong("nightcreature.fireball.cooldown", 20); //default cooldown seconds is 20
     }
 
     /**
@@ -34,12 +47,11 @@ public class NightCreature {
      * Includes cooldown management to prevent rapid firing.
      */
     public void activateNightCreatureAbility() {
-        FileConfiguration config = plugin.getConfig();
-        long cooldownSeconds = config.getLong("nightcreature.fireball.cooldown");
+        UUID playerId = player.getUniqueId();
 
         // Check cooldown
-        if (System.currentTimeMillis() < cooldownEnd) {
-            long timeLeft = (cooldownEnd - System.currentTimeMillis()) / 1000;
+        if (isOnCooldown(playerId)) {
+            long timeLeft = getRemainingCooldown(playerId);
             player.sendMessage("[Rol] Fireball ability is on cooldown. " + timeLeft + " seconds remaining.");
             return; // Exit the method if the ability is on cooldown.
         }
@@ -50,8 +62,26 @@ public class NightCreature {
         Vector direction = player.getLocation().getDirection();
         fireball.setVelocity(direction.multiply(1.5));
 
-        // Set cooldown
-        cooldownEnd = System.currentTimeMillis() + (cooldownSeconds * 1000);
+        // Start cooldown
+        startCooldown(playerId);
+    }
+
+    // Cooldown methods (copied from Vampire)
+    private void startCooldown(UUID playerId) {
+        cooldowns.put(playerId, System.currentTimeMillis() + (cooldownSeconds * 1000));
+    }
+
+    private boolean isOnCooldown(UUID playerId) {
+        return cooldowns.containsKey(playerId) && cooldowns.get(playerId) > System.currentTimeMillis();
+    }
+
+    private long getRemainingCooldown(UUID playerId) {
+        if (cooldowns.containsKey(playerId)) {
+            long endTime = cooldowns.get(playerId);
+            long timeLeft = (endTime - System.currentTimeMillis()) / 1000;
+            return Math.max(0, timeLeft);
+        }
+        return 0;
     }
 
     /**

@@ -42,7 +42,7 @@ public void onEnable() {
     saveDefaultConfig();
 
     // Load the tick interval from the config
-    int tickInterval = getConfig().getInt("effect-tick-interval"); // Default to 40 ticks
+    int tickInterval = getConfig().getInt("effect-tick-interval");
 
     // Apply species effects to all online players every X ticks
     new BukkitRunnable() {
