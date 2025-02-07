@@ -1,3 +1,4 @@
+// Vampire.java
 package com.github.rol.abilities;
 
 import com.github.rol.Rol;
@@ -9,22 +10,17 @@ import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
-public class Vampire {
+public class Vampire extends Abilities {
 
     private final Rol plugin;
     private final Player player;
     private final Color vampireRed = Color.fromRGB(139, 0, 0);
 
-    private static final Map<UUID, Long> cooldowns = new HashMap<>();
     private static long cooldownSeconds;
     private static double teleportDistance;
     private static double particleDensity;
@@ -46,12 +42,6 @@ public class Vampire {
 
     public void activateVampireAbility() {
         UUID playerId = player.getUniqueId();
-
-        if (isOnCooldown(playerId)) {
-            long timeLeft = getRemainingCooldown(playerId);
-            player.sendMessage("[Rol] Ability is on cooldown. " + timeLeft + " seconds remaining.");
-            return;
-        }
 
         Location originalLocation = player.getLocation();
         Vector direction = originalLocation.getDirection();
@@ -77,24 +67,7 @@ public class Vampire {
 
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1.0f, 1.0f);
 
-        startCooldown(playerId);
-    }
-
-    private void startCooldown(UUID playerId) {
-        cooldowns.put(playerId, System.currentTimeMillis() + (cooldownSeconds * 1000));
-    }
-
-    private boolean isOnCooldown(UUID playerId) {
-        return cooldowns.containsKey(playerId) && cooldowns.get(playerId) > System.currentTimeMillis();
-    }
-
-    private long getRemainingCooldown(UUID playerId) {
-        if (cooldowns.containsKey(playerId)) {
-            long endTime = cooldowns.get(playerId);
-            long timeLeft = (endTime - System.currentTimeMillis()) / 1000;
-            return Math.max(0, timeLeft);
-        }
-        return 0;
+        startCooldown(playerId, cooldownSeconds);
     }
 
     private void spawnRedstoneDustParticles(Location startLocation, Location endLocation) {
@@ -121,8 +94,6 @@ public class Vampire {
     }
 
     public void applyVampireEffects() {
-        FileConfiguration config = plugin.getConfig();
-
         boolean isNight = isNightTime(player);
 
         applyPotionEffect(PotionEffectType.NIGHT_VISION, "vampire.nightVision", isNight);
@@ -131,32 +102,17 @@ public class Vampire {
 
         applyPotionEffect(PotionEffectType.STRENGTH, "vampire.strength", isNight);
 
-        applyMaxHealth(config.getDouble("vampire.maxHealth"));
+        double maxHealth = plugin.getConfig().getDouble("vampire.maxHealth");
+        applyMaxHealth(maxHealth);
     }
 
-    private void applyPotionEffect(PotionEffectType effectType, String configPath, boolean isNight) {
-        FileConfiguration config = plugin.getConfig();
-        boolean enabled = config.getBoolean(configPath + ".enabled", true);
-        int amplifier = config.getInt(configPath + ".amplifier");
-
-        if (enabled && isNight) {
-            PotionEffect nightEffect = new PotionEffect(effectType, 200, amplifier, false, false, true);
-            player.addPotionEffect(nightEffect);
-        } else {
-            player.removePotionEffect(effectType);
-        }
+    @Override
+    protected FileConfiguration getConfig() {
+        return plugin.getConfig();
     }
 
-    public void applyMaxHealth(double maxHealth) {
-        double healthScale = maxHealth;
-
-        player.setHealthScale(healthScale);
-
-        player.setHealth(Math.min(player.getHealth(), healthScale));
-    }
-
-    private boolean isNightTime(Player player) {
-        long time = player.getWorld().getTime();
-        return time > 12300 && time < 23850;
+    @Override
+    protected Player getPlayer() {
+        return player;
     }
 }
