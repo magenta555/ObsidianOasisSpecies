@@ -45,6 +45,7 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
      * @param args    Passed command arguments
      * @return true if a valid command, otherwise false
      */
+    @SuppressWarnings("deprecation")
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (sender instanceof Player) {

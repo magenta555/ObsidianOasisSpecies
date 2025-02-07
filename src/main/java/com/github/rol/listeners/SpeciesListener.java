@@ -56,6 +56,7 @@ public class SpeciesListener implements Listener {
      *
      * @param event The InventoryClickEvent.
      */
+    @SuppressWarnings("deprecation")
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) return;
@@ -119,6 +120,7 @@ public class SpeciesListener implements Listener {
      *
      * @param event The EntityDamageEvent.
      */
+    @SuppressWarnings("deprecation")
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
@@ -128,7 +130,7 @@ public class SpeciesListener implements Listener {
 
         if (species != null && (species.equalsIgnoreCase("VAMPIRE") || species.equalsIgnoreCase("NIGHTCREATURE"))) {
             // Burn in sunlight like a zombie
-            if (event.getCause() == EntityDamageEvent.DamageCause.SUN && player.getWorld().getTime() > 0 && player.getWorld().getTime() < 12300) {
+            if (player.getWorld().getTime() > 0 && player.getWorld().getTime() < 12300) {
                 player.setFireTicks(100); // Set fire ticks
                 player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] The sun burns your skin!");
             }

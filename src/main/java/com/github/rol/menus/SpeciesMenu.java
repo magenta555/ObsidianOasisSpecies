@@ -18,8 +18,6 @@ import java.util.Collections;
  */
 public class SpeciesMenu {
 
-    private final Rol plugin;
-    private final SpeciesManager speciesManager;
     private final Inventory inventory;
 
     /**
@@ -28,10 +26,8 @@ public class SpeciesMenu {
      * @param plugin         The main plugin instance.
      * @param speciesManager The species manager instance.
      */
+    @SuppressWarnings("deprecation")
     public SpeciesMenu(Rol plugin, SpeciesManager speciesManager) {
-        this.plugin = plugin;
-        this.speciesManager = speciesManager;
-
         // Create inventory
         inventory = Bukkit.createInventory(null, 9, ChatColor.DARK_PURPLE + "Choose Your Species");
 
@@ -42,6 +38,7 @@ public class SpeciesMenu {
     /**
      * Initializes the menu items with species options.
      */
+    @SuppressWarnings("deprecation")
     private void initializeMenuItems() {
         // Human
         ItemStack humanItem = new ItemStack(Material.PLAYER_HEAD, 1);

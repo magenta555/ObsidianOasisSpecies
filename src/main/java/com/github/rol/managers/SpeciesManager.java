@@ -2,6 +2,9 @@
 package com.github.rol.managers;
 
 import com.github.rol.Rol;
+import com.github.rol.abilities.NightCreature;
+import com.github.rol.abilities.Vampire;
+
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -34,6 +37,7 @@ public class SpeciesManager {
      * @param player      The player to set the species for.
      * @param speciesName The name of the species.
      */
+    @SuppressWarnings("deprecation")
     public void setPlayerSpecies(Player player, String speciesName) {
         playerSpecies.put(player.getUniqueId(), speciesName.toUpperCase());
         player.sendMessage(ChatColor.LIGHT_PURPLE + "[Rol] You are now a " + speciesName + "!");

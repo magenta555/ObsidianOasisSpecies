@@ -3,7 +3,6 @@ package com.github.rol.abilities;
 
 import com.github.rol.Rol;
 import org.bukkit.ChatColor;
-import org.bukkit.FireworkEffect;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
@@ -32,6 +31,7 @@ public class NightCreature {
     /**
      * Activates the fireball ability for the night creature.
      */
+    @SuppressWarnings("deprecation")
     public void activateNightCreatureAbility() {
         FileConfiguration config = plugin.getConfig();
         long cooldownSeconds = config.getLong("nightcreature.fireball.cooldown", 20);

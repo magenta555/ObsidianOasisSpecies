@@ -34,6 +34,7 @@ public class Vampire {
     /**
      * Activates the teleport ability for the vampire.
      */
+    @SuppressWarnings("deprecation")
     public void activateVampireAbility() {
         FileConfiguration config = plugin.getConfig();
         long cooldownSeconds = config.getLong("vampire.teleport.cooldown", 20);
@@ -100,7 +101,7 @@ public class Vampire {
                 }
 
                 Location particleLocation = startLocation.clone().add(direction.clone().multiply(travelled));
-                player.getWorld().spawnParticle(Particle.REDSTONE, particleLocation, 5, 0, 0, 0, 1);
+                player.getWorld().spawnParticle(Particle.DUST, particleLocation, 5, 0, 0, 0, 1);
                 travelled += particleDensity;
             }
         }.runTaskTimer(plugin, 0, 1);
