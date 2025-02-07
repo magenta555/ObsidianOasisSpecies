@@ -28,6 +28,7 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
     private final String yourSpeciesSetMessage = "Your species has been set to %s.";
     private final String usageSetSpeciesMessage = "Usage: /setspecies <species> <player>";
     private final String onlyPlayersMessage = "This command can only be used by players.";
+    private final String onlySetSpeciesOnceMessage = "You can only set your species once! Please contact an admin for help!";
 
     public SpeciesCommand(Rol plugin, SpeciesManager speciesManager) {
         this.plugin = plugin;
@@ -48,6 +49,12 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
                 player.sendMessage(noSpeciesPermMessage);
                 return true;
             }
+
+            if (speciesManager.isValidSpecies(speciesManager.getPlayerSpecies(player))) {
+                player.sendMessage(onlySetSpeciesOnceMessage);
+                return true;
+            }
+
             new SpeciesMenu(plugin, speciesManager).openInventory(player);
             return true;
         }
