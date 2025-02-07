@@ -1,19 +1,26 @@
-rol:
-  human:
-    abilityitem: STICK
-  vampire:
-    abilityitem: SWORD
-    cooldown: 20
-    particle:
-      distance: 0.5
-      count: 10
-      color:
-        red: 255
-        green: 0
-        blue: 0
-    ability_sound: ENTITY_BAT_TAKEOFF
-    sound_volume: 1.0
-    sound_pitch: 1.0
-    teleport_distance: 5.0
-    damage_immunity_duration: 20
-  players:
+# config.yml
+# Configuration file for the Rol plugin
+
+# Vampire settings
+vampire:
+  teleport:
+    cooldown: 20 # Cooldown in seconds for the teleport ability
+    distance: 5.0 # Teleport distance in blocks
+    particleDensity: 0.5 # Density of redstone dust particles during teleport
+  nightVision:
+    enabled: true #Enables night vision when the player is a vampire and during the night
+  regeneration:
+    enabled: true #Enables regeneration when the player is a vampire and during the night
+  strength:
+    enabled: true #Enables strength when the player is a vampire and during the night
+  maxHealth: 40 # Maximum health (hearts) for vampires
+
+# Night Creature settings
+nightcreature:
+  fireball:
+    cooldown: 20 # Cooldown in seconds for the fireball ability
+  nightVision:
+    enabled: true #Enables night vision when the player is a night creature and during the night
+  strength:
+    enabled: true #Enables strength when the player is a night creature and during the night
+  maxHealth: 30 # Maximum health (hearts) for night creatures
