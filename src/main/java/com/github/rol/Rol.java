@@ -14,35 +14,35 @@ public final class Rol extends JavaPlugin {
 
     private SpeciesManager speciesManager;
 
-@Override
-public void onEnable() {
-    getLogger().info("Plugin has been enabled!");
+    @Override
+    public void onEnable() {
+        getLogger().info("Plugin has been enabled!");
 
-    speciesManager = new SpeciesManager(this);
-    speciesManager.loadSpeciesData();
+        speciesManager = new SpeciesManager(this);
+        speciesManager.loadSpeciesData();
 
-    SpeciesCommand speciesCommand = new SpeciesCommand(this, speciesManager);
-    Objects.requireNonNull(getCommand("rol")).setExecutor(speciesCommand);
-    Objects.requireNonNull(getCommand("rol")).setTabCompleter(speciesCommand);
+        SpeciesCommand speciesCommand = new SpeciesCommand(this, speciesManager);
+        Objects.requireNonNull(getCommand("rol")).setExecutor(speciesCommand);
+        Objects.requireNonNull(getCommand("rol")).setTabCompleter(speciesCommand);
 
-    getServer().getPluginManager().registerEvents(new SpeciesListener(this, speciesManager), this);
+        getServer().getPluginManager().registerEvents(new SpeciesListener(this, speciesManager), this);
 
-    saveDefaultConfig();
+        saveDefaultConfig();
 
-    int tickInterval = getConfig().getInt("effect-tick-interval");
+        int tickInterval = getConfig().getInt("effect-tick-interval");
 
-    new BukkitRunnable() {
-        @Override
-        public void run() {
-            for (Player player : getServer().getOnlinePlayers()) {
-                String species = speciesManager.getPlayerSpecies(player);
-                if (species != null) {
-                    speciesManager.applySpeciesEffects(player, species);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player player : getServer().getOnlinePlayers()) {
+                    String species = speciesManager.getPlayerSpecies(player);
+                    if (species != null) {
+                        speciesManager.applySpeciesEffects(player, species);
+                    }
                 }
             }
-        }
-    }.runTaskTimer(this, 0L, tickInterval);
-}
+        }.runTaskTimer(this, 0L, tickInterval);
+    }
 
     @Override
     public void onDisable() {
