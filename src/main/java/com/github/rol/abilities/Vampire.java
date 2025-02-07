@@ -49,10 +49,10 @@ public class Vampire {
 
     private void loadConfig() {
         FileConfiguration config = plugin.getConfig();
-        cooldownSeconds = config.getLong("vampire.teleport.cooldown", 20);
-        teleportDistance = config.getDouble("vampire.teleport.distance", 5.0);
-        particleDensity = config.getDouble("vampire.teleport.particleDensity", 0.5);
-        particleCount = config.getInt("vampire.teleport.particleCount", 10);
+        cooldownSeconds = config.getLong("vampire.teleport.cooldown");
+        teleportDistance = config.getDouble("vampire.teleport.distance");
+        particleDensity = config.getDouble("vampire.teleport.particleDensity");
+        particleCount = config.getInt("vampire.teleport.particleCount");
     }
 
     /**
@@ -172,10 +172,10 @@ public class Vampire {
     private void applyPotionEffect(PotionEffectType effectType, String configPath, boolean isNight) {
         FileConfiguration config = plugin.getConfig();
         boolean enabled = config.getBoolean(configPath + ".enabled", true);
-        int amplifier = config.getInt(configPath + ".amplifier", 0); //default amplifier
+        int amplifier = config.getInt(configPath + ".amplifier");
 
         if (enabled && isNight) {
-            PotionEffect nightEffect = new PotionEffect(effectType, Integer.MAX_VALUE, amplifier, false, false, true);
+            PotionEffect nightEffect = new PotionEffect(effectType, 2, amplifier, false, false, true);
             player.addPotionEffect(nightEffect);
         } else {
             //remove effect if it exists

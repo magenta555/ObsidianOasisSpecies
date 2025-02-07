@@ -20,10 +20,9 @@ public class NightCreature {
     private final Rol plugin;
     private final Player player;
 
-    // Cooldown handling (copied from Vampire)
+    // Cooldown handling
     private static final Map<UUID, Long> cooldowns = new HashMap<>(); // Static to persist across instances
     private static long cooldownSeconds; //This is now static
-    //private long cooldownEnd = 0; // Stores the timestamp when the fireball ability will be available again. (no longer need this)
 
     /**
      * Constructor for the NightCreature class.
@@ -66,7 +65,7 @@ public class NightCreature {
         startCooldown(playerId);
     }
 
-    // Cooldown methods (copied from Vampire)
+    // Cooldown methods
     private void startCooldown(UUID playerId) {
         cooldowns.put(playerId, System.currentTimeMillis() + (cooldownSeconds * 1000));
     }
@@ -91,26 +90,33 @@ public class NightCreature {
     public void applyNightCreatureEffects() {
         FileConfiguration config = plugin.getConfig();
 
+        boolean isNight = isNightTime(player);
+
         // Night Vision (only at night)
-        boolean nightVisionEnabled = config.getBoolean("nightcreature.nightVision.enabled");
-        if (nightVisionEnabled && isNightTime(player)) {
-            applyPotionEffect(player, PotionEffectType.NIGHT_VISION, 1, 255); // Night vision for the night creature
-        } else {
-            removePotionEffect(player, PotionEffectType.NIGHT_VISION); // Remove night vision during the day
-        }
+        applyPotionEffect(PotionEffectType.NIGHT_VISION, "nightcreature.nightVision", isNight);
 
         // Strength (only at night)
-        boolean strengthEnabled = config.getBoolean("nightcreature.strength.enabled");
-        if (strengthEnabled && isNightTime(player)) {
-            applyPotionEffect(player, PotionEffectType.STRENGTH, 1, 255); // Strength for the night creature
-        } else {
-            removePotionEffect(player, PotionEffectType.STRENGTH); // Remove strength during the day
-        }
+        applyPotionEffect(PotionEffectType.STRENGTH, "nightcreature.strength", isNight);
+
 
         // Max Health
         double maxHealth = config.getDouble("nightcreature.maxHealth");
         player.setHealthScale(maxHealth);
         player.setHealth(Math.min(player.getHealth(), maxHealth)); // Ensure current health doesn't exceed the new max.
+    }
+
+    private void applyPotionEffect(PotionEffectType effectType, String configPath, boolean isNight) {
+        FileConfiguration config = plugin.getConfig();
+        boolean enabled = config.getBoolean(configPath + ".enabled", true);
+        int amplifier = config.getInt(configPath + ".amplifier");
+
+        if (enabled && isNight) {
+            PotionEffect nightEffect = new PotionEffect(effectType, 2, amplifier, false, false, true);
+            player.addPotionEffect(nightEffect);
+        } else {
+            //remove effect if it exists
+            player.removePotionEffect(effectType);
+        }
     }
 
     /**
@@ -124,25 +130,4 @@ public class NightCreature {
         return time > 12300 && time < 23850; // Define night time based on Minecraft's time system
     }
 
-    /**
-     * Applies a potion effect to the player.
-     *
-     * @param player The player to apply the effect to.
-     * @param type The type of potion effect.
-     * @param amplifier The amplifier of the effect (0 for basic, 1 for stronger, etc.).
-     * @param duration The duration of the effect in ticks (20 ticks = 1 second). Set to a large value (e.g., 3600, for 3 minutes)
-     */
-    private void applyPotionEffect(Player player, PotionEffectType type, int amplifier, int duration) {
-        player.addPotionEffect(new PotionEffect(type, duration, amplifier, false, false));
-    }
-
-    /**
-     * Removes a potion effect from the player.
-     *
-     * @param player The player to remove the effect from.
-     * @param type The type of potion effect to remove.
-     */
-    private void removePotionEffect(Player player, PotionEffectType type) {
-        player.removePotionEffect(type);
-    }
 }
