@@ -39,9 +39,9 @@ public class SpeciesManager {
             }
             try {
                 if(speciesFile.createNewFile()){
-                    plugin.getLogger().info("[Rol] Successfully created species.yml");
+                    plugin.getLogger().info("Successfully created species.yml");
                 } else {
-                      plugin.getLogger().warning("[Rol] Failed to create species.yml.  File may already exist.");
+                      plugin.getLogger().warning("Failed to create species.yml.  File may already exist.");
                 }
 
             } catch (IOException e) {
@@ -57,7 +57,7 @@ public class SpeciesManager {
         try {
            scanSpeciesConfig();
         } catch (IllegalArgumentException e) {
-            plugin.getLogger().severe("[Rol] Invalid config format in species.yml: " + e.getMessage());
+            plugin.getLogger().severe("Invalid config format in species.yml: " + e.getMessage());
         }
     }
 
@@ -65,7 +65,7 @@ public class SpeciesManager {
         try {
             speciesConfig.save(speciesFile);
         } catch (IOException e) {
-            plugin.getLogger().severe("[Rol] Could not save species.yml!");
+            plugin.getLogger().severe("Could not save species.yml!");
             e.printStackTrace();
         }
     }
@@ -88,15 +88,15 @@ public class SpeciesManager {
                             playerSpecies.put(uuid, species.toUpperCase());
                         }
                     } catch (IllegalArgumentException e) {
-                        plugin.getLogger().warning("[Rol] Invalid UUID found in species data: " + uuidString);
+                        plugin.getLogger().warning("Invalid UUID found in species data: " + uuidString);
                     }
                 }
-                plugin.getLogger().info("[Rol] Loaded " + playerSpecies.size() + " species entries from species.yml.");
+                plugin.getLogger().info("Loaded " + playerSpecies.size() + " species entries from species.yml.");
             } else {
-                plugin.getLogger().info("[Rol] No existing species data found in species.yml.");
+                plugin.getLogger().info("No existing species data found in species.yml.");
             }
         } catch (IOException | InvalidConfigurationException e) {
-            plugin.getLogger().severe("[Rol] Could not load species.yml!");
+            plugin.getLogger().severe("Could not load species.yml!");
             e.printStackTrace();
         }
     }
@@ -154,7 +154,7 @@ public class SpeciesManager {
             plugin.getLogger().severe("species.yml not found during validation!");
             e.printStackTrace();
         } catch (IOException | InvalidConfigurationException e) {
-            plugin.getLogger().severe("[Rol] Error loading species.yml during validation!");
+            plugin.getLogger().severe("Error loading species.yml during validation!");
             e.printStackTrace();
         } finally {
             if (scan != null) {

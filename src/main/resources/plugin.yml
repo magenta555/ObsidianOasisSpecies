@@ -1,0 +1,4 @@
+name: Rol
+version: 0
+main: com.github.rol.Rol
+api-version: 1.21.4
