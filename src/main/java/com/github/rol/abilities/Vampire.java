@@ -15,6 +15,10 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 /**
  * Implements the vampire's teleport and passive abilities.
  */
@@ -22,8 +26,14 @@ public class Vampire {
 
     private final Rol plugin;
     private final Player player;
-    private long cooldownEnd = 0;
     private final Color vampireRed = Color.fromRGB(139, 0, 0); // Dark red for vampire feel
+
+    // Cooldown handling
+    private static final Map<UUID, Long> cooldowns = new HashMap<>(); // Static to persist across instances
+    private static long cooldownSeconds;
+    private static double teleportDistance;
+    private static double particleDensity;
+    private static int particleCount;
 
     /**
      * Constructor for the Vampire class.
@@ -34,31 +44,37 @@ public class Vampire {
     public Vampire(Rol plugin, Player player) {
         this.plugin = plugin;
         this.player = player;
+        loadConfig(); // Load configuration values
+    }
+
+    private void loadConfig() {
+        FileConfiguration config = plugin.getConfig();
+        cooldownSeconds = config.getLong("vampire.teleport.cooldown", 20);
+        teleportDistance = config.getDouble("vampire.teleport.distance", 5.0);
+        particleDensity = config.getDouble("vampire.teleport.particleDensity", 0.5);
+        particleCount = config.getInt("vampire.teleport.particleCount", 10);
     }
 
     /**
      * Activates the vampire's teleport ability.
      */
     public void activateVampireAbility() {
-        FileConfiguration config = plugin.getConfig();
-        long cooldownSeconds = config.getLong("vampire.teleport.cooldown", 20);
+        UUID playerId = player.getUniqueId();
 
         // Check cooldown
-        if (System.currentTimeMillis() < cooldownEnd) {
-            long timeLeft = (cooldownEnd - System.currentTimeMillis()) / 1000;
+        if (isOnCooldown(playerId)) {
+            long timeLeft = getRemainingCooldown(playerId);
             player.sendMessage("[Rol] Teleport ability is on cooldown. " + timeLeft + " seconds remaining.");
             return;
         }
 
-        // Calculate teleport location
-        double teleportDistance = config.getDouble("vampire.teleport.distance", 5.0);
         Location originalLocation = player.getLocation();
         Vector direction = originalLocation.getDirection();
         Location teleportLocation = originalLocation.clone().add(direction.multiply(teleportDistance));
 
         // Safety check: Ensure the destination has air
         Block targetBlock = teleportLocation.getBlock();
-        Block aboveTargetBlock = teleportLocation.clone().add(0, 1, 0).getBlock(); // Check block above
+        Block aboveTargetBlock = teleportLocation.clone().add(0, 1, 0).getBlock();
 
         if (!targetBlock.isPassable() || !aboveTargetBlock.isPassable()) {
             player.sendMessage("[Rol] Teleport destination is not safe.");
@@ -82,8 +98,25 @@ public class Vampire {
         // Play sound
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1.0f, 1.0f);
 
-        // Set cooldown
-        cooldownEnd = System.currentTimeMillis() + (cooldownSeconds * 1000);
+        // Start cooldown
+        startCooldown(playerId);
+    }
+
+    private void startCooldown(UUID playerId) {
+        cooldowns.put(playerId, System.currentTimeMillis() + (cooldownSeconds * 1000));
+    }
+
+    private boolean isOnCooldown(UUID playerId) {
+        return cooldowns.containsKey(playerId) && cooldowns.get(playerId) > System.currentTimeMillis();
+    }
+
+    private long getRemainingCooldown(UUID playerId) {
+        if (cooldowns.containsKey(playerId)) {
+            long endTime = cooldowns.get(playerId);
+            long timeLeft = (endTime - System.currentTimeMillis()) / 1000;
+            return Math.max(0, timeLeft);
+        }
+        return 0;
     }
 
     /**
@@ -93,10 +126,6 @@ public class Vampire {
      * @param endLocation   The ending location.
      */
     private void spawnRedstoneDustParticles(Location startLocation, Location endLocation) {
-        FileConfiguration config = plugin.getConfig();
-        double particleDensity = config.getDouble("vampire.teleport.particleDensity", 0.5);
-        int particleCount = config.getInt("vampire.teleport.particleCount", 10); //Configurable particle count
-
         Vector direction = endLocation.toVector().subtract(startLocation.toVector()).normalize();
         double distance = startLocation.distance(endLocation);
 
@@ -111,9 +140,9 @@ public class Vampire {
                 }
 
                 Location particleLocation = startLocation.clone().add(direction.clone().multiply(travelled));
-                DustOptions dustOptions = new DustOptions(vampireRed, 1.0f); // Use pre-defined color
+                DustOptions dustOptions = new DustOptions(vampireRed, 1.0f);
 
-                player.getWorld().spawnParticle(Particle.DUST, particleLocation, particleCount, 0, 0, 0, dustOptions); // Use REDSTONE with DustOptions
+                player.getWorld().spawnParticle(Particle.DUST, particleLocation, particleCount, 0, 0, 0, dustOptions);
                 travelled += particleDensity;
             }
         }.runTaskTimer(plugin, 0, 1);
@@ -137,13 +166,13 @@ public class Vampire {
         applyPotionEffect(PotionEffectType.STRENGTH, "vampire.strength", isNight);
 
         // Max Health (Health boost is better)
-         applyMaxHealth(config.getDouble("vampire.maxHealth", 40));
+         applyMaxHealth(config.getDouble("vampire.maxHealth"));
     }
 
     private void applyPotionEffect(PotionEffectType effectType, String configPath, boolean isNight) {
         FileConfiguration config = plugin.getConfig();
-        boolean enabled = config.getBoolean(configPath + ".enabled");
-        int amplifier = config.getInt(configPath + ".amplifier"); //default amplifier
+        boolean enabled = config.getBoolean(configPath + ".enabled", true);
+        int amplifier = config.getInt(configPath + ".amplifier", 0); //default amplifier
 
         if (enabled && isNight) {
             PotionEffect nightEffect = new PotionEffect(effectType, Integer.MAX_VALUE, amplifier, false, false, true);
