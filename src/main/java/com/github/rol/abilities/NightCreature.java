@@ -38,7 +38,7 @@ public class NightCreature extends Abilities {
 
         if (isOnCooldown(playerId)) {
             long remainingCooldown = getRemainingCooldown(playerId);
-            player.sendMessage("You must wait " + remainingCooldown + " seconds before using this ability again.");
+            player.sendMessage("Night Creature Fireball Cooldown:" + remainingCooldown);
             return;
         }
 
