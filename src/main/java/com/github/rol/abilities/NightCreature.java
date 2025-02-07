@@ -1,3 +1,4 @@
+// NightCreature.java
 package com.github.rol.abilities;
 
 import com.github.rol.Rol;
@@ -26,14 +27,20 @@ public class NightCreature extends Abilities {
 
     private void loadConfig() {
         FileConfiguration config = plugin.getConfig();
-        cooldownSeconds = config.getLong("nightcreature.fireball.cooldown", 20);
-        fireballSpeed = config.getDouble("nightcreature.fireball.speed", 1.5);
-        fireballYield = config.getDouble("nightcreature.fireball.yield", 1.0);
-        fireballIncendiary = config.getBoolean("nightcreature.fireball.incendiary", false);
+        cooldownSeconds = config.getLong("nightcreature.fireball.cooldown");
+        fireballSpeed = config.getDouble("nightcreature.fireball.speed");
+        fireballYield = config.getDouble("nightcreature.fireball.yield");
+        fireballIncendiary = config.getBoolean("nightcreature.fireball.incendiary");
     }
 
     public void activateNightCreatureAbility() {
         UUID playerId = player.getUniqueId();
+
+        if (isOnCooldown(playerId)) {
+            long remainingCooldown = getRemainingCooldown(playerId);
+            player.sendMessage("You must wait " + remainingCooldown + " seconds before using this ability again.");
+            return;
+        }
 
         SmallFireball fireball = player.getWorld().spawn(player.getLocation().add(0, 1.5, 0), SmallFireball.class);
         fireball.setShooter(player);

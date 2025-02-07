@@ -43,6 +43,12 @@ public class Vampire extends Abilities {
     public void activateVampireAbility() {
         UUID playerId = player.getUniqueId();
 
+        if (isOnCooldown(playerId)) {
+            long remainingCooldown = getRemainingCooldown(playerId);
+            player.sendMessage("You must wait " + remainingCooldown + " seconds before using this ability again.");
+            return;
+        }
+
         Location originalLocation = player.getLocation();
         Vector direction = originalLocation.getDirection();
         Location teleportLocation = originalLocation.clone().add(direction.multiply(teleportDistance));
