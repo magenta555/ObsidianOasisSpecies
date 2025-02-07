@@ -64,7 +64,7 @@ public class Vampire {
         // Check cooldown
         if (isOnCooldown(playerId)) {
             long timeLeft = getRemainingCooldown(playerId);
-            player.sendMessage("[Rol] Teleport ability is on cooldown. " + timeLeft + " seconds remaining.");
+            player.sendMessage("[Rol] Ability is on cooldown. " + timeLeft + " seconds remaining.");
             return;
         }
 
@@ -175,7 +175,7 @@ public class Vampire {
         int amplifier = config.getInt(configPath + ".amplifier");
 
         if (enabled && isNight) {
-            PotionEffect nightEffect = new PotionEffect(effectType, 2, amplifier, false, false, true);
+            PotionEffect nightEffect = new PotionEffect(effectType, 20, amplifier, false, false, true);
             player.addPotionEffect(nightEffect);
         } else {
             //remove effect if it exists
