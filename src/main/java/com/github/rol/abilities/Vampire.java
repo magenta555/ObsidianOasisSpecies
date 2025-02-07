@@ -45,7 +45,7 @@ public class Vampire extends Abilities {
 
         if (isOnCooldown(playerId)) {
             long remainingCooldown = getRemainingCooldown(playerId);
-            player.sendMessage("[Rol] Vampire Teleport Cooldown:" + remainingCooldown);
+            player.sendMessage("[Rol] Vampire Teleport Cooldown: " + remainingCooldown);
             return;
         }
 
