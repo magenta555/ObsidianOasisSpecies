@@ -38,7 +38,7 @@ public class NightCreature extends Abilities {
 
         if (isOnCooldown(playerId)) {
             long remainingCooldown = getRemainingCooldown(playerId);
-            player.sendMessage("Night Creature Fireball Cooldown:" + remainingCooldown);
+            player.sendMessage("[Rol] Night Creature Fireball Cooldown:" + remainingCooldown);
             return;
         }
 
