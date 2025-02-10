@@ -4,7 +4,7 @@ import com.github.rol.Rol;
 import com.github.rol.abilities.NightCreature;
 import com.github.rol.abilities.Vampire;
 import com.github.rol.managers.SpeciesManager;
-import org.bukkit.Material;
+//import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -90,10 +90,10 @@ public class SpeciesListener implements Listener {
                     vampire.activateVampireAbility();
                 }
             } else if (species.equalsIgnoreCase("NIGHTCREATURE")) {
-                if (event.getAction() == Action.RIGHT_CLICK_AIR &&
-                        player.getInventory().getItemInMainHand().getType() == Material.AIR) { // Changed check here
+                if (event.getAction() == Action.RIGHT_CLICK_AIR) { 
                     NightCreature nightCreature = new NightCreature(plugin, player);
                     nightCreature.activateNightCreatureAbility();
+                    player.sendMessage(player.getInventory().getItemInMainHand().toString());
                 }
             }
         }
