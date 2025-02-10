@@ -23,8 +23,13 @@ public final class Rol extends JavaPlugin {
         SpeciesCommand speciesCommand = new SpeciesCommand(this, speciesManager);
         getCommand("species").setExecutor(speciesCommand);
         getCommand("setspecies").setExecutor(speciesCommand);
+        getCommand("clearspecies").setExecutor(speciesCommand);
+
+
         getCommand("species").setTabCompleter(speciesCommand);
         getCommand("setspecies").setTabCompleter(speciesCommand);
+        getCommand("clearspecies").setTabCompleter(speciesCommand);
+
 
         getServer().getPluginManager().registerEvents(new SpeciesListener(this, speciesManager), this);
 
