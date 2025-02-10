@@ -91,7 +91,7 @@ public class SpeciesListener implements Listener {
                 }
             } else if (species.equalsIgnoreCase("NIGHTCREATURE")) {
                 if (event.getAction() == Action.RIGHT_CLICK_AIR &&
-                        player.getInventory().getItemInMainHand().getType() == Material.BLAZE_ROD) {
+                        player.getInventory().getItemInMainHand().getType() == Material.AIR) { // Changed check here
                     NightCreature nightCreature = new NightCreature(plugin, player);
                     nightCreature.activateNightCreatureAbility();
                 }
