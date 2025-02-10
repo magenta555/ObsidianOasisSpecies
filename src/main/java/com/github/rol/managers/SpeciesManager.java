@@ -8,6 +8,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -115,6 +116,14 @@ public class SpeciesManager {
         return playerSpecies.get(player.getUniqueId());
     }
 
+    public void clearPlayerSpecies(Player player) {
+        String species = playerSpecies.remove(player.getUniqueId());
+        if (species != null) {
+            removeSpeciesEffects(player, species);
+            saveSpeciesData();
+        }
+    }
+
     public boolean isValidSpecies(String speciesName) {
         return validSpecies.contains(speciesName.toUpperCase());
     }
@@ -130,6 +139,28 @@ public class SpeciesManager {
                 nightCreature.applyNightCreatureEffects();
                 break;
         }
+    }
+
+    public void removeSpeciesEffects(Player player, String speciesName) {
+        switch (speciesName) {
+            case "VAMPIRE":
+                removePotionEffect(player, PotionEffectType.NIGHT_VISION);
+                removePotionEffect(player, PotionEffectType.REGENERATION);
+                removePotionEffect(player, PotionEffectType.STRENGTH);
+                player.setHealthScale(20);
+                player.setHealth(Math.min(player.getHealth(), 20));
+                break;
+            case "NIGHTCREATURE":
+                removePotionEffect(player, PotionEffectType.NIGHT_VISION);
+                removePotionEffect(player, PotionEffectType.STRENGTH);
+                 player.setHealthScale(20);
+                player.setHealth(Math.min(player.getHealth(), 20));
+                break;
+        }
+    }
+
+    private void removePotionEffect(Player player, PotionEffectType effectType) {
+        player.removePotionEffect(effectType);
     }
 
     public void scanSpeciesConfig() throws IllegalArgumentException {

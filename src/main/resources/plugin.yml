@@ -15,10 +15,18 @@ commands:
     usage: /setspecies <species> <player>
     permission: rol.setspecies
     permission-message: You need the permission rol.setspecies!
+  clearspecies:
+    description: Clears a player's species.
+    usage: /clearspecies <player>
+    permission: rol.clearspecies
+    permission-message: You need the permission rol.clearspecies!
 permissions:
   rol.species:
     description: Allows players to use the /species command
     default: true
   rol.setspecies:
     description: Allows players to use the /setspecies command
+    default: op
+  rol.clearspecies:
+    description: Allows players to use the /clearspecies command
     default: op

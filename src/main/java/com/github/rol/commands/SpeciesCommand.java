@@ -22,11 +22,14 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
     private final SpeciesManager speciesManager;
     private final String noSpeciesPermMessage = "You do not have permission to use the /species command.";
     private final String noSetSpeciesPermMessage = "You do not have permission to use the /setspecies command.";
+    private final String noClearSpeciesPermMessage = "You do not have permission to use the /clearspecies command.";
     private final String invalidSpeciesMessage = "Invalid species type!";
     private final String playerNotFoundMessage = "Player not found!";
     private final String speciesSetMessage = "Set %s's species to %s.";
+    private final String speciesClearedMessage = "Cleared %s's species.";
     private final String yourSpeciesSetMessage = "Your species has been set to %s.";
     private final String usageSetSpeciesMessage = "Usage: /setspecies <species> <player>";
+    private final String usageClearSpeciesMessage = "Usage: /clearspecies <player>";
     private final String onlyPlayersMessage = "This command can only be used by players.";
     private final String onlySetSpeciesOnceMessage = "You can only set your species once! Please contact an admin for help!";
 
@@ -64,6 +67,10 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
             return handleSetSpeciesCommand(player, args);
         }
 
+        if (command.getName().equalsIgnoreCase("clearspecies")) {
+            return handleClearSpeciesCommand(player, args);
+        }
+
         return false; // Should not happen, but good practice
     }
 
@@ -92,6 +99,26 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    private boolean handleClearSpeciesCommand(Player player, String[] args) {
+        if (!player.hasPermission("rol.clearspecies")) {
+            player.sendMessage(noClearSpeciesPermMessage);
+            return true;
+        }
+
+        if (args.length != 1) {
+            player.sendMessage(usageClearSpeciesMessage);
+            return true;
+        }
+
+        Optional.ofNullable(plugin.getServer().getPlayerExact(args[0])).ifPresentOrElse(target -> {
+            speciesManager.clearPlayerSpecies(target);
+            player.sendMessage(String.format(speciesClearedMessage, target.getName()));
+            target.sendMessage("[Rol] Your species has been cleared by " + player.getName() + ". You can now choose a new species.");
+        }, () -> player.sendMessage(playerNotFoundMessage));
+
+        return true;
+    }
+
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (command.getName().equalsIgnoreCase("setspecies")) {
@@ -104,6 +131,15 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
                 List<String> playerNames = new ArrayList<>();
                 plugin.getServer().getOnlinePlayers().forEach(onlinePlayer -> playerNames.add(onlinePlayer.getName()));
                 return StringUtil.copyPartialMatches(args[1], playerNames, new ArrayList<>());
+            }
+        } else if (command.getName().equalsIgnoreCase("clearspecies")) {
+            if (!sender.hasPermission("rol.clearspecies")) {
+                return Collections.emptyList(); // No completions if no permission
+            }
+            if (args.length == 1) {
+                List<String> playerNames = new ArrayList<>();
+                plugin.getServer().getOnlinePlayers().forEach(onlinePlayer -> playerNames.add(onlinePlayer.getName()));
+                return StringUtil.copyPartialMatches(args[0], playerNames, new ArrayList<>());
             }
         }
         return Collections.emptyList();
