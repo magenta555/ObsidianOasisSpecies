@@ -1,7 +1,6 @@
-package com.github.rol.menus;
+package com.github.rol;
 
-import com.github.rol.Rol;
-import com.github.rol.managers.SpeciesManager;
+import com.github.rol.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

@@ -1,4 +1,4 @@
-package com.github.rol.abilities;
+package com.github.rol;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;

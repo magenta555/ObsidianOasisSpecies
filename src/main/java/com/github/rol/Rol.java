@@ -17,7 +17,6 @@ public final class Rol extends JavaPlugin {
         speciesManager = new SpeciesManager(this);
         speciesManager.loadSpeciesData();
 
-        // Register the /species and /setspecies commands
         SpeciesCommand speciesCommand = new SpeciesCommand(this, speciesManager);
         getCommand("species").setExecutor(speciesCommand);
         getCommand("setspecies").setExecutor(speciesCommand);

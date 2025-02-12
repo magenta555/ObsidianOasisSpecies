@@ -1,8 +1,6 @@
-package com.github.rol.commands;
+package com.github.rol;
 
-import com.github.rol.Rol;
-import com.github.rol.menus.SpeciesMenu;
-import com.github.rol.managers.SpeciesManager;
+import com.github.rol.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -71,7 +69,7 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
             return handleClearSpeciesCommand(player, args);
         }
 
-        return false; // Should not happen, but good practice
+        return false;
     }
 
     private boolean handleSetSpeciesCommand(Player player, String[] args) {
@@ -123,7 +121,7 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (command.getName().equalsIgnoreCase("setspecies")) {
             if (!sender.hasPermission("rol.setspecies")) {
-                return Collections.emptyList(); // No completions if no permission
+                return Collections.emptyList(); 
             }
             if (args.length == 1) {
                 return StringUtil.copyPartialMatches(args[0], speciesManager.getAllSpecies(), new ArrayList<>());
@@ -134,7 +132,7 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
             }
         } else if (command.getName().equalsIgnoreCase("clearspecies")) {
             if (!sender.hasPermission("rol.clearspecies")) {
-                return Collections.emptyList(); // No completions if no permission
+                return Collections.emptyList(); 
             }
             if (args.length == 1) {
                 List<String> playerNames = new ArrayList<>();

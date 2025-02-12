@@ -1,9 +1,6 @@
-package com.github.rol.listeners;
+package com.github.rol;
 
-import com.github.rol.Rol;
-import com.github.rol.abilities.NightCreature;
-import com.github.rol.abilities.Vampire;
-import com.github.rol.managers.SpeciesManager;
+import com.github.rol.*;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;

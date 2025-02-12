@@ -1,8 +1,6 @@
-package com.github.rol.managers;
+package com.github.rol;
 
-import com.github.rol.Rol;
-import com.github.rol.abilities.NightCreature;
-import com.github.rol.abilities.Vampire;
+import com.github.rol.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;

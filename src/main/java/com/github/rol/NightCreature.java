@@ -1,5 +1,4 @@
-// NightCreature.java
-package com.github.rol.abilities;
+package com.github.rol;
 
 import com.github.rol.Rol;
 import org.bukkit.configuration.file.FileConfiguration;

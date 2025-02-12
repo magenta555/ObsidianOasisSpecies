@@ -1,7 +1,6 @@
-// Vampire.java
-package com.github.rol.abilities;
+package com.github.rol;
 
-import com.github.rol.Rol;
+import com.github.rol.*;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
