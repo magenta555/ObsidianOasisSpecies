@@ -28,5 +28,3 @@ nightcreature:
     enabled: true
     amplifier: 9
   maxHealth: 60
-
-effect-tick-interval: 40

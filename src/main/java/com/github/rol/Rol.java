@@ -32,8 +32,6 @@ public final class Rol extends JavaPlugin {
 
         saveDefaultConfig();
 
-        int tickInterval = getConfig().getInt("effect-tick-interval");
-
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -44,7 +42,7 @@ public final class Rol extends JavaPlugin {
                     }
                 }
             }
-        }.runTaskTimer(this, 0L, tickInterval);
+        }.runTaskTimer(this, 0L, 20);
     }
 
     @Override

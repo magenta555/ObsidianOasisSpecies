@@ -39,7 +39,7 @@ public abstract class Abilities {
         int amplifier = config.getInt(configPath + ".amplifier");
 
         if (enabled && isNight) {
-            PotionEffect nightEffect = new PotionEffect(effectType, 1000, amplifier, false, false, true);
+            PotionEffect nightEffect = new PotionEffect(effectType, 11 * 20, amplifier, false, false, true);
             getPlayer().addPotionEffect(nightEffect);
         } else {
             getPlayer().removePotionEffect(effectType);
