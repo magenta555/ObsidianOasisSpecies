@@ -1,8 +1,6 @@
 package com.github.rol;
 
-import com.github.rol.commands.SpeciesCommand;
-import com.github.rol.listeners.SpeciesListener;
-import com.github.rol.managers.SpeciesManager;
+import com.github.rol.*;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
