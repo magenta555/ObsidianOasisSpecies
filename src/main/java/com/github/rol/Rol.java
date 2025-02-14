@@ -63,7 +63,7 @@ public final class Rol extends JavaPlugin {
                     }
                 }
             }
-        }.runTaskTimer(this, 0L, 20); // Runs the task every 20 ticks (1 second)
+        }.runTaskTimer(this, 0L, 20L); // Runs the task every 20 ticks (1 second)
     }
 
     // Called when the plugin is disabled
