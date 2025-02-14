@@ -59,20 +59,33 @@ public class SpeciesListener implements Listener {
             ItemStack clickedItem = event.getCurrentItem(); // Get the item that was clicked
             if (clickedItem == null || !clickedItem.hasItemMeta()) return; // Ensure item is valid
 
-            String speciesName = null; // Variable to hold the selected species name
+            String speciesName = null;
 
-            // Determine which species was selected based on item display name
-            if (clickedItem.getItemMeta().getDisplayName().contains("Human")) {
+            if (clickedItem.getItemMeta().getDisplayName().equals("Human")) {
                 speciesName = "HUMAN";
-            } else if (clickedItem.getItemMeta().getDisplayName().contains("Vampire")) {
+            } else if (clickedItem.getItemMeta().getDisplayName().equals("Vampire")) {
                 speciesName = "VAMPIRE";
-            } else if (clickedItem.getItemMeta().getDisplayName().contains("Night Creature")) {
+            } else if (clickedItem.getItemMeta().getDisplayName().equals("Night Creature")) {
                 speciesName = "NIGHTCREATURE";
             }
 
             if (speciesName != null) {
-                speciesManager.setPlayerSpecies(player, speciesName); // Set player's species in manager
-                player.closeInventory(); // Close the inventory after selection
+                ConfirmationMenu confirmationMenu = new ConfirmationMenu(speciesName);
+                player.openInventory(confirmationMenu.getInventory()); // Open confirmation menu for selected species
+                player.sendMessage("SpeciesName " + speciesName);
+            }
+        } else if (inventoryName.startsWith("Confirm ")) {
+            event.setCancelled(true);
+            ItemStack clickedItem = event.getCurrentItem();
+            if (clickedItem == null || !clickedItem.hasItemMeta()) return;
+            if (clickedItem.getItemMeta().getDisplayName().equals("Confirm Selection")) {
+                String speciesName = inventoryName.substring(8, inventoryName.length() - 9);
+                speciesManager.setPlayerSpecies(player, speciesName);
+                player.closeInventory();
+                player.sendMessage("[Rol] Your species has been set to " + speciesName + "!");
+            } else if (clickedItem.getItemMeta().getDisplayName().equals("Cancel Selection")) {
+                player.closeInventory();
+                player.sendMessage("[Rol] Species selection canceled.");
             }
         }
     }
@@ -83,19 +96,19 @@ public class SpeciesListener implements Listener {
         Player player = event.getPlayer(); // Get the player who interacted
         String species = speciesManager.getPlayerSpecies(player); // Get player's current species
 
-        if (species != null) { 
-            if (species.equalsIgnoreCase("VAMPIRE")) { 
+        if (species != null) {
+            if (species.equalsIgnoreCase("VAMPIRE")) {
                 // Check for right-click action with a sword in hand for vampires
                 if (event.getAction() == Action.RIGHT_CLICK_AIR &&
                         player.getInventory().getItemInMainHand().getType().toString().contains("SWORD")) {
-                    Vampire vampire = new Vampire(plugin, player); 
+                    Vampire vampire = new Vampire(plugin, player);
                     vampire.activateVampireAbility(); // Activate vampire-specific ability
                 }
-            } else if (species.equalsIgnoreCase("NIGHTCREATURE")) { 
+            } else if (species.equalsIgnoreCase("NIGHTCREATURE")) {
                 // Check for right-click action with a blaze rod in hand for night creatures
                 if (event.getAction() == Action.RIGHT_CLICK_AIR &&
-                        player.getInventory().getItemInMainHand().getType() == Material.BLAZE_ROD) { 
-                    NightCreature nightCreature = new NightCreature(plugin, player); 
+                        player.getInventory().getItemInMainHand().getType() == Material.BLAZE_ROD) {
+                    NightCreature nightCreature = new NightCreature(plugin, player);
                     nightCreature.activateNightCreatureAbility(); // Activate night creature-specific ability
                 }
             }
@@ -104,7 +117,7 @@ public class SpeciesListener implements Listener {
 
     // Method to check if a player is exposed to sunlight and apply fire damage accordingly
     private void checkSunlight(Player player) {
-        String species = speciesManager.getPlayerSpecies(player); 
+        String species = speciesManager.getPlayerSpecies(player);
 
         if (species != null && (species.equalsIgnoreCase("VAMPIRE") || species.equalsIgnoreCase("NIGHTCREATURE"))) {
             if (isDaytime(player.getWorld().getTime()) && !isUnderSunlight(player)) {
@@ -120,21 +133,21 @@ public class SpeciesListener implements Listener {
 
     // Helper method to check if a player is under direct sunlight or blocked by solid blocks above them
     private boolean isUnderSunlight(Player player) {
-        Location location = player.getLocation(); 
-        World world = player.getWorld(); 
-        int highestBlockY = world.getHighestBlockYAt(location); 
+        Location location = player.getLocation();
+        World world = player.getWorld();
+        int highestBlockY = world.getHighestBlockYAt(location);
 
-        if (highestBlockY > location.getY()) { 
+        if (highestBlockY > location.getY()) {
             return true; // If there is a block higher than the player's Y coordinate, they are under cover.
         }
 
-         for (int y = location.getBlockY() + 1; y <= world.getMaxHeight(); y++) { 
-            Block block = world.getBlockAt(location.getBlockX(), y, location.getBlockZ()); 
-            if (block.getType().isSolid()) { 
+        for (int y = location.getBlockY() + 1; y <= world.getMaxHeight(); y++) {
+            Block block = world.getBlockAt(location.getBlockX(), y, location.getBlockZ());
+            if (block.getType().isSolid()) {
                 return true; // If any solid block is found above, they are not in direct sunlight.
             }
         }
-        
+
         return false; // If no solid blocks are found above, they are exposed to sunlight.
     }
 }

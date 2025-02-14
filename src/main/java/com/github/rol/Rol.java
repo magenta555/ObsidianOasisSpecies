@@ -27,19 +27,19 @@ public final class Rol extends JavaPlugin {
         // Creates a new SpeciesCommand instance
         SpeciesCommand speciesCommand = new SpeciesCommand(this, speciesManager);
 
-        // Sets the executor for the "species" command
+        // Sets the executors for various commands
         getCommand("species").setExecutor(speciesCommand);
-        // Sets the executor for the "setspecies" command
         getCommand("setspecies").setExecutor(speciesCommand);
-        // Sets the executor for the "clearspecies" command
         getCommand("clearspecies").setExecutor(speciesCommand);
+        getCommand("listspecies").setExecutor(speciesCommand);
 
-        // Sets the tab completer for the "species" command
+
+        // Sets the tab completers for various commands
         getCommand("species").setTabCompleter(speciesCommand);
-        // Sets the tab completer for the "setspecies" command
         getCommand("setspecies").setTabCompleter(speciesCommand);
-        // Sets the tab completer for the "clearspecies" command
         getCommand("clearspecies").setTabCompleter(speciesCommand);
+        getCommand("listspecies").setTabCompleter(speciesCommand);
+
 
         // Registers the SpeciesListener
         getServer().getPluginManager().registerEvents(new SpeciesListener(this, speciesManager), this);
