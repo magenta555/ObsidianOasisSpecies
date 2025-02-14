@@ -65,8 +65,8 @@ public class SpeciesListener implements Listener {
                 speciesName = "HUMAN";
             } else if (clickedItem.getItemMeta().getDisplayName().contains("Vampire")) {
                 speciesName = "VAMPIRE";
-            } else if (clickedItem.getItemMeta().getDisplayName().contains("Night Creature")) {
-                speciesName = "NIGHTCREATURE";
+            } else if (clickedItem.getItemMeta().getDisplayName().contains("Soul Forger")) {
+                speciesName = "SOULFORGER";
             }
 
             if (speciesName != null) {
@@ -119,7 +119,8 @@ public class SpeciesListener implements Listener {
     private void checkSunlight(Player player) {
         String species = speciesManager.getPlayerSpecies(player);
 
-        if (species != null && (species.equalsIgnoreCase("VAMPIRE") || species.equalsIgnoreCase("NIGHTCREATURE"))) {
+        if (species != null && (species.equalsIgnoreCase("VAMPIRE") || 
+            species.equalsIgnoreCase("NIGHTCREATURE"))) {
             if (isDaytime(player.getWorld().getTime()) && !isUnderSunlight(player)) {
                 player.setFireTicks(40); // Set fire ticks to damage the player for being in sunlight
             }

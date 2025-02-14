@@ -17,7 +17,7 @@ public class SpeciesManager {
     private final Map<UUID, String> playerSpecies = new HashMap<>(); // Map to store player species by UUID
     private File speciesFile; // File object for the species configuration file
     private FileConfiguration speciesConfig; // Configuration object for the species file
-    private final List<String> validSpecies = Arrays.asList("HUMAN", "VAMPIRE", "NIGHTCREATURE"); // List of valid species
+    private final List<String> validSpecies = Arrays.asList("HUMAN", "VAMPIRE", "NIGHTCREATURE", "SOULFORGER"); // List of valid species
 
     // Constructor that initializes the SpeciesManager
     public SpeciesManager(Rol plugin) {
