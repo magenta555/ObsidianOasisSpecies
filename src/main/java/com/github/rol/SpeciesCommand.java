@@ -135,10 +135,6 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 0) {
-            if (!sender.hasPermission("rol.listspecies.all")) {
-                sender.sendMessage("You do not have permission to list the species of all players.");
-                return true;
-            }
             StringBuilder sb = new StringBuilder("Current Players' Species:\n");
             for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
                 String species = speciesManager.getPlayerSpecies(onlinePlayer);

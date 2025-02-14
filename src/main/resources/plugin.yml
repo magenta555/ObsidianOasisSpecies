@@ -32,5 +32,5 @@ permissions:
     description: Allows players to use the /clearspecies command
     default: op
   rol.listspecies:
-    description: Allows players to use the /setspecies command
+    description: Allows players to use the /listspecies command
     default: true
