@@ -24,8 +24,9 @@ public class SpeciesMenu {
         ItemStack humanItem = new ItemStack(Material.WHITE_STAINED_GLASS, 1);
         ItemMeta humanMeta = humanItem.getItemMeta();
         if (humanMeta != null) {
-            humanMeta.setDisplayName("Human");
-            humanMeta.setLore(Arrays.asList("The default species.", "Click to select!"));
+            humanMeta.setDisplayName("§7Human");
+            humanMeta.setLore(Arrays.asList("§dClick to select and gain the following traits:",
+                                                    "§7-10 Hearts"));
             humanItem.setItemMeta(humanMeta);
         }
         inventory.setItem(0, humanItem);
@@ -35,20 +36,22 @@ public class SpeciesMenu {
         ItemMeta vampireMeta = vampireItem.getItemMeta();
         if (vampireMeta != null) {
             vampireMeta.setDisplayName("§4Vampire");
-            vampireMeta.setLore(Arrays.asList("§4A creature of the night.", "Click to select!"));
+            vampireMeta.setLore(Arrays.asList("§dClick to select and gain the following traits:",
+                                                        "§4-40 Hearts"));
             vampireItem.setItemMeta(vampireMeta);
         }
         inventory.setItem(1, vampireItem);
 
-        // Create and configure the "Night Creature" item
-        ItemStack nightCreatureItem = new ItemStack(Material.BLACK_STAINED_GLASS, 1);
-        ItemMeta nightCreatureMeta = nightCreatureItem.getItemMeta();
-        if (nightCreatureMeta != null) {
-            nightCreatureMeta.setDisplayName("Night Creature");
-            nightCreatureMeta.setLore(Arrays.asList("A mysterious being of darkness.", "Click to select!"));
-            nightCreatureItem.setItemMeta(nightCreatureMeta);
+        // Create and configure the "Soul Forger" item
+        ItemStack soulForgerItem = new ItemStack(Material.GRAY_STAINED_GLASS, 1);
+        ItemMeta soulForgerMeta = soulForgerItem.getItemMeta();
+        if (soulForgerMeta != null) {
+            soulForgerMeta.setDisplayName("§8Soul Forger");
+            soulForgerMeta.setLore(Arrays.asList("§dClick to select and gain the following traits:",
+                                                            "§8-??? Hearts"));
+            soulForgerItem.setItemMeta(soulForgerMeta);
         }
-        inventory.setItem(2, nightCreatureItem);
+        inventory.setItem(2, soulForgerItem);
     }
 
     // Method to open the species selection inventory for a player

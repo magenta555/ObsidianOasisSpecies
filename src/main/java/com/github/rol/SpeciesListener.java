@@ -61,11 +61,11 @@ public class SpeciesListener implements Listener {
 
             String speciesName = null;
 
-            if (clickedItem.getItemMeta().getDisplayName().equals("Human")) {
+            if (clickedItem.getItemMeta().getDisplayName().contains("Human")) {
                 speciesName = "HUMAN";
-            } else if (clickedItem.getItemMeta().getDisplayName().equals("Vampire")) {
+            } else if (clickedItem.getItemMeta().getDisplayName().contains("Vampire")) {
                 speciesName = "VAMPIRE";
-            } else if (clickedItem.getItemMeta().getDisplayName().equals("Night Creature")) {
+            } else if (clickedItem.getItemMeta().getDisplayName().contains("Night Creature")) {
                 speciesName = "NIGHTCREATURE";
             }
 
