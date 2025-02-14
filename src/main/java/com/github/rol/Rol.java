@@ -1,37 +1,23 @@
 package com.github.rol;
-
-import com.github.rol.*;
-
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-
 public final class Rol extends JavaPlugin {
-
     private SpeciesManager speciesManager;
-
     @Override
     public void onEnable() {
         getLogger().info("Plugin has been enabled!");
-
         speciesManager = new SpeciesManager(this);
         speciesManager.loadSpeciesData();
-
         SpeciesCommand speciesCommand = new SpeciesCommand(this, speciesManager);
         getCommand("species").setExecutor(speciesCommand);
         getCommand("setspecies").setExecutor(speciesCommand);
         getCommand("clearspecies").setExecutor(speciesCommand);
-
-
         getCommand("species").setTabCompleter(speciesCommand);
         getCommand("setspecies").setTabCompleter(speciesCommand);
         getCommand("clearspecies").setTabCompleter(speciesCommand);
-
-
         getServer().getPluginManager().registerEvents(new SpeciesListener(this, speciesManager), this);
-
         saveDefaultConfig();
-
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -44,14 +30,11 @@ public final class Rol extends JavaPlugin {
             }
         }.runTaskTimer(this, 0L, 20);
     }
-
     @Override
     public void onDisable() {
         getLogger().info("Plugin has been disabled!");
-
         speciesManager.saveSpeciesData();
     }
-
     public SpeciesManager getSpeciesManager() {
         return speciesManager;
     }

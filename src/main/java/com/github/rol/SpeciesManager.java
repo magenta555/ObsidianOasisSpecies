@@ -1,33 +1,26 @@
 package com.github.rol;
-
-import com.github.rol.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
-
 public class SpeciesManager {
-
     private final Rol plugin;
     private final Map<UUID, String> playerSpecies = new HashMap<>();
     private File speciesFile;
     private FileConfiguration speciesConfig;
     private final List<String> validSpecies = Arrays.asList("HUMAN", "VAMPIRE", "NIGHTCREATURE");
-
     public SpeciesManager(Rol plugin) {
         this.plugin = plugin;
         createSpeciesFile();
         reloadSpeciesConfig();
         loadSpeciesData();
     }
-
     private void createSpeciesFile() {
         speciesFile = new File(plugin.getDataFolder(), "species.yml");
         if (!speciesFile.exists()) {
@@ -40,24 +33,20 @@ public class SpeciesManager {
                 } else {
                     plugin.getLogger().warning("Failed to create species.yml.  File may already exist.");
                 }
-
             } catch (IOException e) {
                 plugin.getLogger().severe("Could not create species.yml!");
                 e.printStackTrace();
             }
         }
     }
-
     public void reloadSpeciesConfig() {
         speciesConfig = YamlConfiguration.loadConfiguration(speciesFile);
-
         try {
             scanSpeciesConfig();
         } catch (IllegalArgumentException e) {
             plugin.getLogger().severe("Invalid config format in species.yml: " + e.getMessage());
         }
     }
-
     public void saveSpeciesConfig() {
         try {
             speciesConfig.save(speciesFile);
@@ -66,16 +55,13 @@ public class SpeciesManager {
             e.printStackTrace();
         }
     }
-
     public FileConfiguration getSpeciesConfig() {
         return speciesConfig;
     }
-
     public void loadSpeciesData() {
         try {
             speciesConfig.load(speciesFile);
             ConfigurationSection speciesSection = speciesConfig.getConfigurationSection("species");
-
             if (speciesSection != null) {
                 for (String uuidString : speciesSection.getKeys(false)) {
                     try {
@@ -97,23 +83,19 @@ public class SpeciesManager {
             e.printStackTrace();
         }
     }
-
     public void saveSpeciesData() {
         ConfigurationSection speciesSection = getSpeciesConfig().createSection("species");
         playerSpecies.forEach((uuid, species) -> speciesSection.set(uuid.toString(), species));
         saveSpeciesConfig();
     }
-
     public void setPlayerSpecies(Player player, String speciesName) {
         playerSpecies.put(player.getUniqueId(), speciesName.toUpperCase());
         player.sendMessage("[Rol] You are now a " + speciesName + "!");
         saveSpeciesData();
     }
-
     public String getPlayerSpecies(Player player) {
         return playerSpecies.get(player.getUniqueId());
     }
-
     public void clearPlayerSpecies(Player player) {
         String species = playerSpecies.remove(player.getUniqueId());
         if (species != null) {
@@ -121,11 +103,9 @@ public class SpeciesManager {
             saveSpeciesData();
         }
     }
-
     public boolean isValidSpecies(String speciesName) {
         return validSpecies.contains(speciesName.toUpperCase());
     }
-
     public void applySpeciesEffects(Player player, String speciesName) {
         switch (speciesName) {
             case "VAMPIRE":
@@ -138,7 +118,6 @@ public class SpeciesManager {
                 break;
         }
     }
-
     public void removeSpeciesEffects(Player player, String speciesName) {
         switch (speciesName) {
             case "VAMPIRE":
@@ -156,11 +135,9 @@ public class SpeciesManager {
                 break;
         }
     }
-
     private void removePotionEffect(Player player, PotionEffectType effectType) {
         player.removePotionEffect(effectType);
     }
-
     public void scanSpeciesConfig() throws IllegalArgumentException {
         Scanner scan = null;
         try {
@@ -187,7 +164,6 @@ public class SpeciesManager {
             }
         }
     }
-
     public List<String> getAllSpecies() {
         return new ArrayList<>(validSpecies);
     }

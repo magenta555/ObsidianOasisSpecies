@@ -1,6 +1,4 @@
 package com.github.rol;
-
-import com.github.rol.*;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -14,16 +12,12 @@ import org.bukkit.event.block.Action;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.block.Block;
 import org.bukkit.Location;
-
 public class SpeciesListener implements Listener {
-
     private final Rol plugin;
     private final SpeciesManager speciesManager;
-
     public SpeciesListener(Rol plugin, SpeciesManager speciesManager) {
         this.plugin = plugin;
         this.speciesManager = speciesManager;
-
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -33,31 +27,24 @@ public class SpeciesListener implements Listener {
             }
         }.runTaskTimer(plugin, 0L, 20L);
     }
-
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         String species = speciesManager.getPlayerSpecies(player);
-
         if (species != null) {
             speciesManager.applySpeciesEffects(player, species);
         }
     }
-
     @SuppressWarnings("deprecation")
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) return;
-
         Player player = (Player) event.getWhoClicked();
         String inventoryName = event.getView().getTitle();
-
         if (inventoryName.equals("Choose Your Species")) {
             event.setCancelled(true);
-
             ItemStack clickedItem = event.getCurrentItem();
             if (clickedItem == null || !clickedItem.hasItemMeta()) return;
-
             String speciesName = null;
             if (clickedItem.getItemMeta().getDisplayName().contains("Human")) {
                 speciesName = "HUMAN";
@@ -66,19 +53,16 @@ public class SpeciesListener implements Listener {
             } else if (clickedItem.getItemMeta().getDisplayName().contains("Night Creature")) {
                 speciesName = "NIGHTCREATURE";
             }
-
             if (speciesName != null) {
                 speciesManager.setPlayerSpecies(player, speciesName);
                 player.closeInventory();
             }
         }
     }
-
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         String species = speciesManager.getPlayerSpecies(player);
-
         if (species != null) {
             if (species.equalsIgnoreCase("VAMPIRE")) {
                 if (event.getAction() == Action.RIGHT_CLICK_AIR &&
@@ -95,38 +79,30 @@ public class SpeciesListener implements Listener {
             }
         }
     }
-
     private void checkSunlight(Player player) {
         String species = speciesManager.getPlayerSpecies(player);
-
         if (species != null && (species.equalsIgnoreCase("VAMPIRE") || species.equalsIgnoreCase("NIGHTCREATURE"))) {
             if (isDaytime(player.getWorld().getTime()) && !isUnderSunlight(player)) {
                 player.setFireTicks(40);
             }
         }
     }
-
     private boolean isDaytime(long time) {
         return time > 0 && time < 12300;
     }
-
     private boolean isUnderSunlight(Player player) {
         Location location = player.getLocation();
         World world = player.getWorld();
-
         int highestBlockY = world.getHighestBlockYAt(location);
-
         if (highestBlockY > location.getY()) {
             return true;
         }
-
          for (int y = location.getBlockY() + 1; y <= world.getMaxHeight(); y++) {
             Block block = world.getBlockAt(location.getBlockX(), y, location.getBlockZ());
             if (block.getType().isSolid()) {
                 return true;
             }
         }
-         
         return false;
     }
 }
