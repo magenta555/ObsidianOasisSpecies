@@ -10,13 +10,17 @@ commands:
     usage: /species
     permission: rol.species
   setspecies:
-    description: Sets a player's species.
+    description: Sets a player's specie.
     usage: /setspecies <species> <player>
     permission: rol.setspecies
   clearspecies:
-    description: Clears a player's species.
+    description: Clears a player's specie.
     usage: /clearspecies <player>
     permission: rol.clearspecies
+  listspecies:
+    description: List the species of all players or a single player.
+    usage: /listspecies <player>
+    permission: rol.listspecies
 permissions:
   rol.species:
     description: Allows players to use the /species command
@@ -27,3 +31,6 @@ permissions:
   rol.clearspecies:
     description: Allows players to use the /clearspecies command
     default: op
+  rol.listspecies:
+    description: Allows players to use the /setspecies command
+    default: true
