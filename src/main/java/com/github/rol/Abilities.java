@@ -52,4 +52,16 @@ public abstract class Abilities {
         }
     }
 
-    // Method to
+    // Method to determine if it is currently night time in the player's world
+    protected boolean isNightTime(Player player) {
+        long time = player.getWorld().getTime(); // Get the current world time
+        return time > 12300 && time < 23850; // Return true if it's night (between 12300 and 23850 ticks)
+    }
+
+    // Method to set the player's maximum health and ensure current health does not exceed it
+    protected void applyMaxHealth(double maxHealth) {
+        Player player = getPlayer(); // Get the player associated with this ability
+        player.setHealthScale(maxHealth); // Set maximum health scale for the player
+        player.setHealth(Math.min(player.getHealth(), maxHealth)); // Ensure player's current health does not exceed max health
+    }
+}
