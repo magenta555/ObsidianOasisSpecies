@@ -56,8 +56,8 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        SpeciesInventory speciesInventory = new SpeciesInventory(plugin);
-        player.openInventory(speciesInventory.getInventory());
+        SpeciesChoose speciesChoose = new SpeciesChoose(plugin);
+        player.openInventory(speciesChoose.getInventory());
 
         return true;
     }
