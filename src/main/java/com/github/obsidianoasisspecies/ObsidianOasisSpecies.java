@@ -20,7 +20,6 @@ public class ObsidianOasisSpecies extends JavaPlugin {
     @Override
     public void onEnable() {
         playerSpecies = new HashMap<>();
-
         speciesFile = new File(getDataFolder(), "species.yml");
 
         if (!speciesFile.exists()) {
@@ -31,13 +30,9 @@ public class ObsidianOasisSpecies extends JavaPlugin {
         }
 
         speciesConfig = YamlConfiguration.loadConfiguration(speciesFile);
-
         loadSpeciesData();
-
         getCommand("species").setExecutor(new SpeciesCommand(this));
-
         getCommand("species").setTabCompleter(this);
-
         getServer().getPluginManager().registerEvents(new SpeciesInventory(this), this);
     }
 
@@ -72,13 +67,16 @@ public class ObsidianOasisSpecies extends JavaPlugin {
                     String speciesName = speciesConfig.getString("species." + uuidString);
                     Species species = Species.valueOf(speciesName);
                     playerSpecies.put(uuid, species);
+
                 } catch (IllegalArgumentException e) {
                     getLogger().warning("Could not load species for UUID: " + uuidString + ". Invalid species name.");
                 } catch (Exception e) {
                     getLogger().warning("Could not load species for UUID: " + uuidString + ". Error: " + e.getMessage());
                 }
             }
+
             getLogger().info("Loaded species data from species.yml");
+            
         } else {
             getLogger().info("No species data found in species.yml, starting with empty data.");
         }
@@ -96,6 +94,7 @@ public class ObsidianOasisSpecies extends JavaPlugin {
         try {
             speciesConfig.save(speciesFile);
             getLogger().info("Saved species data to species.yml");
+
         } catch (IOException e) {
             getLogger().severe("Could not save species data to species.yml: " + e.getMessage());
         }
