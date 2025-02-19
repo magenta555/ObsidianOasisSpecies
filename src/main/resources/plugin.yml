@@ -1,0 +1,20 @@
+name: ObsidianOasisSpecies
+version: 0.0.2
+main: com.github.obsidianoasisspecies.ObsidianOasisSpecies
+api-version: 1.21.4
+author: magenta555
+website: github.com/magenta555/ObsidianOasisSpecies
+commands:
+  species:
+    description: Main command for ObsidianOasisSpecies!
+    usage: /species <choose/list/clear/set> [player] [species]
+    aliases: [s]
+permissions:
+  obsidianoasisspecies.choose:
+    default: true
+  obsidianoasisspecies.list:
+    default: true
+  obsidianoasisspecies.clear:
+    default: op
+  obsidianoasisspecies.set:
+    default: op

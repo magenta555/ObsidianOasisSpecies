@@ -17,7 +17,7 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-<properties>
+  <properties>
     <maven.compiler.release>21</maven.compiler.release>
-</properties>
+  </properties>
 </project>
