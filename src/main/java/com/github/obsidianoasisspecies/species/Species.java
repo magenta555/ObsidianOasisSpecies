@@ -1,5 +1,4 @@
 package com.github.obsidianoasisspecies.species;
-
 public enum Species {
     HUMAN("§7Human"),
     WEREWOLF("§6Werewolf"),
@@ -7,14 +6,11 @@ public enum Species {
     NIGHTCREATURE("§bNight Creature"),
     SOULFORGER("§8Soul Forger"),
     MERFOLK("§9Merfolk");
-
     private final String name;
-
     Species(String name) {
-        this.name = name; 
+          this.name = name;
    }
-
-   public String getName() { 
-        return name; 
+   public String getName() {     
+          return name; 
    }
 }

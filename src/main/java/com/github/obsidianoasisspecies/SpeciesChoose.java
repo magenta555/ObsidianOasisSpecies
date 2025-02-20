@@ -1,5 +1,4 @@
 package com.github.obsidianoasisspecies;
-
 import com.github.obsidianoasisspecies.species.Species;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -10,25 +9,20 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
 public class SpeciesChoose implements Listener {
-
     private final Inventory inventory;   
     private final ObsidianOasisSpecies plugin;   
     private final Map<Integer, Species> slotSpeciesMap = new HashMap<>();
     private Species chosenSpecies;
-
     @SuppressWarnings("deprecation")
     public SpeciesChoose(ObsidianOasisSpecies plugin) {    
         this.plugin = plugin;    
         inventory = Bukkit.createInventory(null, 9, "§d§lChoose Your Species!");    
         initializeInventory();    
     }
-
     private void initializeInventory() {       
         Map<Integer, Species> speciesSlots = new HashMap<>();      
         speciesSlots.put(0, Species.HUMAN);      
@@ -36,7 +30,6 @@ public class SpeciesChoose implements Listener {
         speciesSlots.put(2, Species.VAMPIRE);      
         speciesSlots.put(3, Species.SOULFORGER);      
         speciesSlots.put(4, Species.MERFOLK);
-
         for (int i = 0; i < inventory.getSize(); i++) {         
             ItemStack item;         
             if (speciesSlots.containsKey(i)) {             
@@ -49,7 +42,6 @@ public class SpeciesChoose implements Listener {
             inventory.setItem(i, item);      
         }  
     }
-
     @SuppressWarnings("deprecation")
     private ItemStack createStainedGlassPane() {       
         ItemStack item = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);       
@@ -58,7 +50,6 @@ public class SpeciesChoose implements Listener {
         item.setItemMeta(meta);       
         return item;   
     }
-
     @SuppressWarnings("deprecation")
     private ItemStack createSpeciesItem(Species species) {       
         Material material;       
@@ -70,7 +61,6 @@ public class SpeciesChoose implements Listener {
             case MERFOLK: material = Material.BLUE_STAINED_GLASS_PANE; break;           
             default: material = Material.BARRIER; break;       
         }  
-
         ItemStack item = new ItemStack(material, 1);       
         ItemMeta meta = item.getItemMeta();       
         meta.setDisplayName(species.getName());       
@@ -78,11 +68,9 @@ public class SpeciesChoose implements Listener {
         item.setItemMeta(meta);       
         return item;   
     }
-
     public Inventory getInventory() {   
         return inventory;   
     }
-
     @EventHandler   
     public void onInventoryClick(InventoryClickEvent event) {    
         if (event.getView().getTitle().contains("Choose")) {    
@@ -101,35 +89,26 @@ public class SpeciesChoose implements Listener {
             handleConfirmation(event);
         }    
     }
-
     private void openConfirmationInventory(Player player) {
-        Inventory confirmationInventory = Bukkit.createInventory(null, 9, "§d§lConfirm " + chosenSpecies.getName() + "?");
-        
+        Inventory confirmationInventory = Bukkit.createInventory(null, 9, "§d§lConfirm your choice: " + chosenSpecies.getName());   
         ItemStack confirmItem = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta confirmMeta = confirmItem.getItemMeta();
         confirmMeta.setDisplayName("§2§lConfirm!");
         confirmMeta.setLore(Arrays.asList("§d§lClick to confirm your choice: " + chosenSpecies.getName()));
         confirmItem.setItemMeta(confirmMeta);
-        
         ItemStack cancelItem = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta cancelMeta = cancelItem.getItemMeta();
         cancelMeta.setDisplayName("§4§lCancel!");
         cancelMeta.setLore(Arrays.asList("§4§lClick to cancel!"));
         cancelItem.setItemMeta(cancelMeta);
-
         confirmationInventory.setItem(0, confirmItem);
         confirmationInventory.setItem(8, cancelItem);
-
         player.openInventory(confirmationInventory);
     }
-
     private void handleConfirmation(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-        
+        Player player = (Player) event.getWhoClicked();   
         event.setCancelled(true);
-
         ItemStack clickedItem = event.getCurrentItem();
-        
         if (clickedItem != null && clickedItem.hasItemMeta()) {
             if (clickedItem.getType() == Material.EMERALD_BLOCK) {
                 plugin.setPlayerSpecies(player, chosenSpecies);
