@@ -9,6 +9,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.Location;
+import io.papermc.paper.world.MoonPhase;
 
 public class SpeciesRunnable extends BukkitRunnable {
     private final ObsidianOasisSpecies plugin;
@@ -32,13 +33,15 @@ public class SpeciesRunnable extends BukkitRunnable {
         World world = player.getWorld();
         long time = world.getTime();
         boolean isDay = time > 23000 || time < 13000;
-        int moonPhase = world.getMoonPhase().ordinal();
+        MoonPhase moonPhase = world.getMoonPhase();
         
         // Set max health based on species and conditions
-        if ((species == Species.VAMPIRE || species == Species.NIGHTCREATURE) && isDay) {
-            player.setMaxHealth(species.getMaxHearts()); // Half health during the day
+        if ((species == Species.VAMPIRE || species == Species.NIGHTCREATURE || species == Species.WEREWOLF) && isDay) {
+            player.setMaxHealth(species.getMaxHearts() / 2); // Half health during the day
+        } else if (species == Species.WEREWOLF && moonPhase != MoonPhase.FULL_MOON) {
+            player.setMaxHealth(species.getMaxHearts() / 2);
         } else {
-            player.setMaxHealth(species.getMaxHearts() * 2); // Normal max health for other species
+            player.setMaxHealth(species.getMaxHearts()); // Normal max health for other species
         }
 
         // Apply Vampire and Night Creature effects only at night
@@ -55,7 +58,7 @@ public class SpeciesRunnable extends BukkitRunnable {
         }
 
         // Apply Werewolf effects only during a full moon
-        if (species == Species.WEREWOLF && moonPhase == 0) {
+        if (species == Species.WEREWOLF && !isDay && moonPhase == MoonPhase.FULL_MOON) {
             for (PotionEffectType effect : species.getPotionEffects()) {
                 player.addPotionEffect(new PotionEffect(effect, 12 * 20, 1));
             }
