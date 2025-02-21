@@ -24,7 +24,7 @@ public class Chat implements Listener {
             String message = event.getMessage();
 
             // Format the chat message with the species' chat color
-            event.setFormat(chatColor + player.getName() + ": " + ChatColor.translateAlternateColorCodes('&', message));
+            event.setFormat(chatColor + "[" + species.getName() + "] " + player.getName() + ": " + ChatColor.translateAlternateColorCodes('&', message));
         }
     }
 }

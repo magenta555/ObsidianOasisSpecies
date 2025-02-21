@@ -55,8 +55,6 @@ public class ObsidianOasisSpecies extends JavaPlugin {
     public void setPlayerSpecies(Player player, Species species) {
         removeSpeciesAttributes(player); // Remove old attributes
         playerSpecies.put(player.getUniqueId(), species);
-        
-        applySpeciesAttributes(player); // Apply new attributes
         saveSpeciesData();
     }
 
@@ -68,21 +66,6 @@ public class ObsidianOasisSpecies extends JavaPlugin {
 
     public HashMap<UUID, Species> getAllPlayerSpecies() {
         return playerSpecies;
-    }
-
-    public void applySpeciesAttributes(Player player) {
-        Species species = getPlayerSpecies(player);
-        
-        if (species != null) {
-            // Set max health
-            player.setMaxHealth(species.getMaxHearts() * 2); // Hearts are half health points
-            player.setHealth(player.getMaxHealth()); // Set current health to max
-            
-            // Apply potion effects
-            for (PotionEffectType effect : species.getPotionEffects()) {
-                player.addPotionEffect(new PotionEffect(effect, Integer.MAX_VALUE, 1));
-            }
-        }
     }
 
     public void removeSpeciesAttributes(Player player) {
