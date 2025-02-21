@@ -35,12 +35,8 @@ public class SpeciesRunnable extends BukkitRunnable {
         int moonPhase = world.getMoonPhase().ordinal();
         
         // Set max health based on species and conditions
-        if (species == Species.VAMPIRE || species == Species.NIGHTCREATURE) {
-            if (isDay) {
-                player.setMaxHealth(species.getMaxHearts()); // Half health during the day (5 hearts)
-            } else {
-                player.setMaxHealth(species.getMaxHearts() * 2); // Normal max health at night
-            }
+        if ((species == Species.VAMPIRE || species == Species.NIGHTCREATURE) && isDay) {
+            player.setMaxHealth(species.getMaxHearts()); // Half health during the day
         } else {
             player.setMaxHealth(species.getMaxHearts() * 2); // Normal max health for other species
         }
@@ -49,7 +45,7 @@ public class SpeciesRunnable extends BukkitRunnable {
         if ((species == Species.VAMPIRE || species == Species.NIGHTCREATURE)) {
             if (isDay) {
                 if (isUnderSunlight(player)) {
-                    player.setFireTicks(2 * 20);
+                    player.setFireTicks(20);
                 }
             } else {
                 for (PotionEffectType effect : species.getPotionEffects()) {
