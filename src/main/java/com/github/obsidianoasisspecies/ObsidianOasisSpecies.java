@@ -4,13 +4,8 @@ import com.github.obsidianoasisspecies.species.Species;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -66,6 +61,7 @@ public class ObsidianOasisSpecies extends JavaPlugin {
         return playerSpecies;
     }
 
+    @SuppressWarnings("deprecation")
     public void removeSpeciesAttributes(Player player) {
         // Remove all potion effects
         for (PotionEffect effect : player.getActivePotionEffects()) {

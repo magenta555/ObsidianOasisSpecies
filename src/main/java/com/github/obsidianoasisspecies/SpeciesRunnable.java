@@ -29,6 +29,7 @@ public class SpeciesRunnable extends BukkitRunnable {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void applyConditionalEffects(Player player, Species species) {
         World world = player.getWorld();
         long time = world.getTime();
@@ -77,7 +78,6 @@ public class SpeciesRunnable extends BukkitRunnable {
     private boolean isUnderSunlight(Player player) {
         Location location = player.getLocation();
         World world = player.getWorld();
-        int highestBlockY = world.getHighestBlockYAt(location);
 
         for (int y = location.getBlockY() + 1; y <= world.getMaxHeight(); y++) {
             Block block = world.getBlockAt(location.getBlockX(), y, location.getBlockZ());

@@ -71,15 +71,12 @@ public class SpeciesChoose implements Listener {
     public Inventory getInventory() {   
         return inventory;   
     }
+    @SuppressWarnings("deprecation")
     @EventHandler   
     public void onInventoryClick(InventoryClickEvent event) {    
         if (event.getView().getTitle().contains("Choose")) {    
             Player player = (Player) event.getWhoClicked();    
-            ItemStack clickedItem = event.getCurrentItem();    
-            Inventory clickedInventory = event.getClickedInventory();    
-
-            event.setCancelled(true);    
-
+            event.setCancelled(true);
             int slot = event.getSlot();    
             if (slotSpeciesMap.containsKey(slot)) {    
                 chosenSpecies = slotSpeciesMap.get(slot);    
@@ -89,6 +86,7 @@ public class SpeciesChoose implements Listener {
             handleConfirmation(event);
         }    
     }
+    @SuppressWarnings("deprecation")
     private void openConfirmationInventory(Player player) {
         Inventory confirmationInventory = Bukkit.createInventory(null, 9, "§d§lConfirm your choice: " + chosenSpecies.getName());   
         ItemStack confirmItem = new ItemStack(Material.EMERALD_BLOCK);
@@ -105,6 +103,7 @@ public class SpeciesChoose implements Listener {
         confirmationInventory.setItem(8, cancelItem);
         player.openInventory(confirmationInventory);
     }
+    @SuppressWarnings("deprecation")
     private void handleConfirmation(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();   
         event.setCancelled(true);
