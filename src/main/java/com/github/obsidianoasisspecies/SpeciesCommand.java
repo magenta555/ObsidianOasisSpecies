@@ -18,7 +18,7 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage("§d§lUsage: /species choose/list/clear/set");
+            sender.sendMessage("§d§lUsage: /species [choose, list, clear, set]");
             return true;
         }
         switch (args[0].toLowerCase()) {
@@ -31,7 +31,7 @@ public class SpeciesCommand implements CommandExecutor, TabCompleter {
             case "set":
                 return setSpecies(sender, args);
             default:
-                sender.sendMessage("§d§lInvalid subcommand. Usage: /species choose/list/clear/set");
+                sender.sendMessage("§d§lInvalid subcommand. Usage: /species [choose, list, clear, set]");
                 return true;
         }
     }
