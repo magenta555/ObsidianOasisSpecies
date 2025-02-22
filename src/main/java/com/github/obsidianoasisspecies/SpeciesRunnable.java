@@ -34,42 +34,45 @@ public class SpeciesRunnable extends BukkitRunnable {
         long time = world.getTime();
         boolean isDay = time > 23000 || time < 13000;
         MoonPhase moonPhase = world.getMoonPhase();
-        
+
+        boolean isVampireOrNightCreature = species == Species.VAMPIRE || species == Species.NIGHTCREATURE;
+        boolean isWerewolf = species == Species.WEREWOLF;
+
         // Set max health based on species and conditions
-        if ((species == Species.VAMPIRE || species == Species.NIGHTCREATURE || species == Species.WEREWOLF) && isDay) {
+        if ((isVampireOrNightCreature || isWerewolf) && isDay) {
             player.setMaxHealth(species.getMaxHearts() / 2); // Half health during the day
-        } else if (species == Species.WEREWOLF && moonPhase != MoonPhase.FULL_MOON) {
+        } else if (isWerewolf && moonPhase != MoonPhase.FULL_MOON) {
             player.setMaxHealth(species.getMaxHearts() / 2);
         } else {
             player.setMaxHealth(species.getMaxHearts()); // Normal max health for other species
         }
 
-        // Apply Vampire and Night Creature effects only at night
-        if ((species == Species.VAMPIRE || species == Species.NIGHTCREATURE)) {
+        // Apply effects based on species and conditions
+        if (isVampireOrNightCreature) {
             if (isDay) {
                 if (isUnderSunlight(player)) {
                     player.setFireTicks(20);
                 }
             } else {
-                for (PotionEffectType effect : species.getPotionEffects()) {
-                    player.addPotionEffect(new PotionEffect(effect, 12 * 20, 1));
-                }
+                applyPotionEffects(player, species);
             }
-        }
-
-        // Apply Werewolf effects only during a full moon
-        if (species == Species.WEREWOLF && !isDay && moonPhase == MoonPhase.FULL_MOON) {
-            for (PotionEffectType effect : species.getPotionEffects()) {
-                player.addPotionEffect(new PotionEffect(effect, 12 * 20, 1));
+        } else if (isWerewolf) {
+            if (!isDay && moonPhase == MoonPhase.FULL_MOON) {
+                applyPotionEffects(player, species);
+            } else if (!isDay) {
+                applyPotionEffects(player, species);
             }
-        }
-        // Apply other species' effects regardless of time
-        if (species != Species.VAMPIRE && species != Species.NIGHTCREATURE && species != Species.WEREWOLF){
-            for (PotionEffectType effect : species.getPotionEffects()) {
-                player.addPotionEffect(new PotionEffect(effect, 12 * 20, 1));
-            }
+        } else {
+            applyPotionEffects(player, species);
         }
     }
+
+    private void applyPotionEffects(Player player, Species species) {
+        for (PotionEffectType effect : species.getPotionEffects()) {
+            player.addPotionEffect(new PotionEffect(effect, 12 * 20, 1));
+        }
+    }
+
 
     private boolean isUnderSunlight(Player player) {
         Location location = player.getLocation();

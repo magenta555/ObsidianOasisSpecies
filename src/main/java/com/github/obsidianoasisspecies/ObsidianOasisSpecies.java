@@ -37,10 +37,8 @@ public class ObsidianOasisSpecies extends JavaPlugin {
         getCommand("species").setExecutor(new SpeciesCommand(this));
         getCommand("species").setTabCompleter(this);
         getServer().getPluginManager().registerEvents(new SpeciesChoose(this), this);
-        getServer().getPluginManager().registerEvents(new Chat(this), this); // Register the new listener
-
-        // Start the runnable to apply effects
-        new SpeciesRunnable(this).runTaskTimer(this, 0L, 20L); // Runs every second
+        // getServer().getPluginManager().registerEvents(new Chat(this), this); 
+        new SpeciesRunnable(this).runTaskTimer(this, 0L, 20L);
     }
 
     @Override
