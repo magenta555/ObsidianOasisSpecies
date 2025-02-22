@@ -7,11 +7,11 @@ import java.util.List;
 
 public enum Species {
     HUMAN("§7Human", "§7", 9, Arrays.asList(PotionEffectType.HERO_OF_THE_VILLAGE, PotionEffectType.SPEED, PotionEffectType.JUMP_BOOST)),
-    WEREWOLF("§6Werewolf", "§6", 18, Arrays.asList(PotionEffectType.STRENGTH, PotionEffectType.REGENERATION, PotionEffectType.NIGHT_VISION)),
-    VAMPIRE("§4Vampire", "§4", 13, Arrays.asList(PotionEffectType.NIGHT_VISION, PotionEffectType.FIRE_RESISTANCE, PotionEffectType.STRENGTH)),
+    MERFOLK("§9Merfolk", "§9", 12, Arrays.asList(PotionEffectType.WATER_BREATHING, PotionEffectType.CONDUIT_POWER, PotionEffectType.DOLPHINS_GRACE)),
     NIGHTCREATURE("§bNight Creature", "§b", 8, Arrays.asList(PotionEffectType.NIGHT_VISION, PotionEffectType.SPEED, PotionEffectType.JUMP_BOOST)),
     SOULFORGER("§8Soul Forger", "§8", 11, Arrays.asList(PotionEffectType.FIRE_RESISTANCE, PotionEffectType.REGENERATION, PotionEffectType.HASTE)),
-    MERFOLK("§9Merfolk", "§9", 12, Arrays.asList(PotionEffectType.WATER_BREATHING, PotionEffectType.CONDUIT_POWER, PotionEffectType.DOLPHINS_GRACE));
+    VAMPIRE("§4Vampire", "§4", 13, Arrays.asList(PotionEffectType.NIGHT_VISION, PotionEffectType.FIRE_RESISTANCE, PotionEffectType.STRENGTH)),
+    WEREWOLF("§6Werewolf", "§6", 18, Arrays.asList(PotionEffectType.STRENGTH, PotionEffectType.REGENERATION, PotionEffectType.NIGHT_VISION));
 
     private final String name;
     private final String chatColor;

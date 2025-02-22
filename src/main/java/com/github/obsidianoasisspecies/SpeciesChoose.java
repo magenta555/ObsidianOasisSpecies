@@ -26,10 +26,10 @@ public class SpeciesChoose implements Listener {
     private void initializeInventory() {       
         Map<Integer, Species> speciesSlots = new HashMap<>();      
         speciesSlots.put(0, Species.HUMAN);      
-        speciesSlots.put(1, Species.WEREWOLF);      
-        speciesSlots.put(2, Species.VAMPIRE);      
-        speciesSlots.put(3, Species.SOULFORGER);      
-        speciesSlots.put(4, Species.MERFOLK);
+        speciesSlots.put(1, Species.MERFOLK);      
+        speciesSlots.put(2, Species.SOULFORGER);      
+        speciesSlots.put(3, Species.VAMPIRE);      
+        speciesSlots.put(4, Species.WEREWOLF);
         for (int i = 0; i < inventory.getSize(); i++) {         
             ItemStack item;         
             if (speciesSlots.containsKey(i)) {             
