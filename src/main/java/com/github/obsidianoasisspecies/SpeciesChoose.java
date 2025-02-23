@@ -88,7 +88,7 @@ public class SpeciesChoose implements Listener {
     }
     @SuppressWarnings("deprecation")
     private void openConfirmationInventory(Player player) {
-        Inventory confirmationInventory = Bukkit.createInventory(null, 9, "§d§lConfirm your choice: " + chosenSpecies.getName());   
+        Inventory confirmationInventory = Bukkit.createInventory(null, 9, "§dConfirm your choice: " + chosenSpecies.getName());   
         ItemStack confirmItem = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta confirmMeta = confirmItem.getItemMeta();
         confirmMeta.setDisplayName("§2§lConfirm!");
