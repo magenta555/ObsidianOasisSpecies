@@ -103,7 +103,6 @@ public class SpeciesChoose implements Listener {
         confirmationInventory.setItem(8, cancelItem);
         player.openInventory(confirmationInventory);
     }
-    @SuppressWarnings("deprecation")
     private void handleConfirmation(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();   
         event.setCancelled(true);
@@ -111,7 +110,6 @@ public class SpeciesChoose implements Listener {
         if (clickedItem != null && clickedItem.hasItemMeta()) {
             if (clickedItem.getType() == Material.EMERALD_BLOCK) {
                 plugin.setPlayerSpecies(player, chosenSpecies);
-                player.setDisplayName(player.getName() + " - " + chosenSpecies);
                 player.sendMessage("§d§lYou have chosen to be a " + chosenSpecies.getName() + "!");
                 player.closeInventory();
             } else if (clickedItem.getType() == Material.REDSTONE_BLOCK) {

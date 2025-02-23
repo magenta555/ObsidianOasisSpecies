@@ -18,12 +18,14 @@ public class SpeciesRunnable extends BukkitRunnable {
         this.plugin = plugin;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void run() {
         for (Player player : Bukkit.getOnlinePlayers()) {
             Species species = plugin.getPlayerSpecies(player);
 
             if (species != null) {
+                player.setPlayerListName(player.getName() + ": " + species.getName());
                 applyConditionalEffects(player, species);
             }
         }
