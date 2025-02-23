@@ -9,11 +9,14 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.Location;
+import org.bukkit.scoreboard.*;
+
+import io.papermc.paper.scoreboard.numbers.NumberFormat;
 import io.papermc.paper.world.MoonPhase;
 
 public class SpeciesRunnable extends BukkitRunnable {
     private final ObsidianOasisSpecies plugin;
-
+    
     public SpeciesRunnable(ObsidianOasisSpecies plugin) {
         this.plugin = plugin;
     }
@@ -21,11 +24,23 @@ public class SpeciesRunnable extends BukkitRunnable {
     @SuppressWarnings("deprecation")
     @Override
     public void run() {
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             Species species = plugin.getPlayerSpecies(player);
 
+            ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+            Scoreboard scoreboard = scoreboardManager.getNewScoreboard();
+            for (Player otherPlayer : Bukkit.getOnlinePlayers()) {
+                if (!otherPlayer.equals(player)) {
+                    otherPlayer.setScoreboard(scoreboard);
+                }
+            }
+
             if (species != null) {
-                player.setPlayerListName(player.getName() + ": " + species.getName());
+                Objective objective = scoreboard.registerNewObjective("species", "dummy", species.getName(), RenderType.INTEGER);
+                objective.numberFormat(NumberFormat.blank());
+                objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
+            
                 applyConditionalEffects(player, species);
             }
         }
@@ -37,7 +52,6 @@ public class SpeciesRunnable extends BukkitRunnable {
         long time = world.getTime();
         boolean isDay = time > 23000 || time < 13000;
         MoonPhase moonPhase = world.getMoonPhase();
-
         boolean isVampireOrNightCreature = species == Species.VAMPIRE || species == Species.NIGHTCREATURE;
         boolean isWerewolf = species == Species.WEREWOLF;
 
