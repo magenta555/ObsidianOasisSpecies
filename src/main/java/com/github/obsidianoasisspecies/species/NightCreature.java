@@ -15,6 +15,7 @@ import java.util.UUID;
 public class NightCreature implements Listener {
     private final Map<UUID, Long> cooldowns = new HashMap<>();
     private final int COOLDOWN_TIME = 10 * 20;
+    private final ObsidianOasisSpecies plugin;
 
     public NightCreature(ObsidianOasisSpecies plugin) {    
         this.plugin = plugin;   
@@ -34,12 +35,12 @@ public class NightCreature implements Listener {
                 if (cooldowns.containsKey(playerId)) {
                     long lastUseTime = cooldowns.get(playerId);
                     if (currentTime - lastUseTime < COOLDOWN_TIME) {
-                        player.sendMessage("Ability is on cooldown. Please wait " + (COOLDOWN_TIME - (currentTime - lastUseTime)) + " seconds.");
+                        player.sendTitle("", "Cooldown: " + ((COOLDOWN_TIME - (currentTime - lastUseTime)) / 20) + " seconds");
                         return;
                     }
                 }
 
-                player.sendMessage("NightCreature Ability Triggered!");
+                player.sendTitle("", "You used an ability!");
                 cooldowns.put(playerId, currentTime);
             }
         }
