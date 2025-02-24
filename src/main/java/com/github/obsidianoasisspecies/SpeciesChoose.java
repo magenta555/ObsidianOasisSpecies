@@ -76,7 +76,7 @@ public class SpeciesChoose implements Listener {
     @SuppressWarnings("deprecation")
     @EventHandler   
     public void onInventoryClick(InventoryClickEvent event) {    
-        String title = event.getView().getTitle() 
+        String title = event.getView().getTitle();
         Player player = (Player) event.getWhoClicked();    
 
         if (title.contains("Choose")) {    
@@ -100,11 +100,11 @@ public class SpeciesChoose implements Listener {
 
     @SuppressWarnings("deprecation")
     private void openConfirmationInventory(Player player) {
-        Inventory confirmationInventory = Bukkit.createInventory(null, 9, "§dConfirm your choice: " + chosenSpecies.getName());   
+        Inventory confirmationInventory = Bukkit.createInventory(null, 9, "§dConfirm species: " + chosenSpecies.getName());   
         ItemStack confirmItem = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta confirmMeta = confirmItem.getItemMeta();
         confirmMeta.setDisplayName("§2§lConfirm!");
-        confirmMeta.setLore(Arrays.asList("§d§lClick to confirm your choice: " + chosenSpecies.getName()));
+        confirmMeta.setLore(Arrays.asList("§d§lClick to confirm: " + chosenSpecies.getName()));
         confirmItem.setItemMeta(confirmMeta);
         ItemStack cancelItem = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta cancelMeta = cancelItem.getItemMeta();
@@ -122,7 +122,7 @@ public class SpeciesChoose implements Listener {
         if (clickedItem != null && clickedItem.hasItemMeta()) {
             if (clickedItem.getType() == Material.EMERALD_BLOCK) {
                 plugin.setPlayerSpecies(player, chosenSpecies);
-                player.sendMessage("§d§lYou have chosen to be a " + chosenSpecies.getName() + "!");
+                player.sendTitle("", "§d§lYou are now a " + chosenSpecies.getName());
                 player.closeInventory();
             } else if (clickedItem.getType() == Material.REDSTONE_BLOCK) {
                 player.openInventory(getInventory());
@@ -147,7 +147,7 @@ public class SpeciesChoose implements Listener {
             ItemStack soulToolItem = new ItemStack(materials[i]);
             ItemMeta soulToolMeta = soulToolItem.getItemMeta();
             soulToolMeta.setDisplayName(color + "Soul Tool");
-            soulToolMeta.setLore(Arrays.asList(color + "Owner: " + player.getName()));
+            soulToolMeta.setLore(Arrays.asList(color + player.getName() + "'s soul is linked to this tool!"));
             soulToolMeta.setUnbreakable(true);
             soulToolItem.setItemMeta(soulToolMeta);
             soulToolInventory.setItem(i, soulToolItem);
