@@ -17,7 +17,7 @@ public class SpeciesChoose implements Listener {
     private final ObsidianOasisSpecies plugin;   
     private final Map<Integer, Species> slotSpeciesMap = new HashMap<>();
     private Species chosenSpecies;
-    private ItemStack selectedSoulTool;
+    private ItemStack selectedSoulTool = null;
 
     @SuppressWarnings("deprecation")
     public SpeciesChoose(ObsidianOasisSpecies plugin) {    
@@ -130,6 +130,7 @@ public class SpeciesChoose implements Listener {
 
                 if (selectedSoulTool != null) {
                     player.getInventory().addItem(selectedSoulTool);
+                    selectedSoulTool = null;
                 }
 
             } else if (clickedItem.getType() == Material.REDSTONE_BLOCK) {
