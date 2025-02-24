@@ -29,9 +29,9 @@ public enum Species {
         PotionEffectType.NIGHT_VISION, 
         PotionEffectType.REGENERATION, 
         PotionEffectType.STRENGTH)),
-    WEREWOLF("§6Werewolf", "§6", 18, Arrays.asList(
-        PotionEffectType.ABSORPTION, 
-        PotionEffectType.HEALTH_BOOST, 
+    WEREWOLF("§6Werewolf", "§6", 20, Arrays.asList(
+        PotionEffectType.GLOWING, 
+        PotionEffectType.WIND_CHARGED, 
         PotionEffectType.SATURATION));
 
     private final String name;

@@ -27,7 +27,7 @@ public class SoulForger implements Listener {
         UUID playerId = player.getUniqueId();
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (player.getInventory().getItemInMainHand().getLore().contains(player.getName())) {
+            if (player.getInventory().getItemInMainHand().getItemMeta().getLore().contains(player.getName())) {
                 
                 World world = player.getWorld();
                 long currentTime = world.getTime();
@@ -35,12 +35,12 @@ public class SoulForger implements Listener {
                 if (cooldowns.containsKey(playerId)) {
                     long lastUseTime = cooldowns.get(playerId);
                     if (currentTime - lastUseTime < COOLDOWN_TIME) {
-                        player.sendTitle(" ", "Cooldown: " + ((COOLDOWN_TIME - (currentTime - lastUseTime)) / 20) + " seconds");
+                        player.sendTitle("", "§dCooldown: " + ((COOLDOWN_TIME - (currentTime - lastUseTime)) / 20) + " seconds");
                         return;
                     }
                 }
 
-                player.sendTitle(" ", "You used an ability!");
+                player.sendTitle("", "§dYou used an ability!");
                 cooldowns.put(playerId, currentTime);
             }
         }
