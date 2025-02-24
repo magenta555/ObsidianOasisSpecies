@@ -24,6 +24,11 @@ public class Werewolf implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        Species species = plugin.getPlayerSpecies(player);
+        if (species != Species.WEREWOLF) {
+            return;
+        }
+
         UUID playerId = player.getUniqueId();
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {

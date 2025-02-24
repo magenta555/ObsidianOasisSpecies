@@ -25,6 +25,10 @@ public class NightCreature implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        Species species = plugin.getPlayerSpecies(player);
+        if (species != Species.NIGHTCREATURE) {
+            return;
+        }
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (player.getInventory().getItemInMainHand().getType().toString().contains("BLAZE")) {

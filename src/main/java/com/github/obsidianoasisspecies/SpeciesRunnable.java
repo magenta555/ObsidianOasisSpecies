@@ -54,8 +54,18 @@ public class SpeciesRunnable extends BukkitRunnable {
             player.setMaxHealth(species.getMaxHearts());
         }
 
-        if (isDay && isVampireOrNightCreature && isUnderSunlight(player)) {
-            player.setFireTicks(20);
+        if (isVampireOrNightCreature) {
+            if (isDay) {
+                if (isUnderSunlight(player)) {
+                    player.setFireTicks(20);
+                }
+            } else {
+                applyPotionEffects(player, species);
+            }
+        } else if (isWerewolf) {
+            if (!isDay && moonPhase == MoonPhase.FULL_MOON) {
+                applyPotionEffects(player, species);
+            }
         } else {
             applyPotionEffects(player, species);
         }

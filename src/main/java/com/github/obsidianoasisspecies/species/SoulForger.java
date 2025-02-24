@@ -11,6 +11,7 @@ import org.bukkit.World;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.List;
 
 public class SoulForger implements Listener {
     private final Map<UUID, Long> cooldowns = new HashMap<>();
@@ -25,23 +26,30 @@ public class SoulForger implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         UUID playerId = player.getUniqueId();
+        Species species = plugin.getPlayerSpecies(player);
+        if (species != Species.SOULFORGER) {
+            return;
+        }
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (player.getInventory().getItemInMainHand().getItemMeta().getLore().contains(player.getName())) {
-                
-                World world = player.getWorld();
-                long currentTime = world.getTime();
-                
-                if (cooldowns.containsKey(playerId)) {
-                    long lastUseTime = cooldowns.get(playerId);
-                    if (currentTime - lastUseTime < COOLDOWN_TIME) {
-                        player.sendTitle("", "§dCooldown: " + ((COOLDOWN_TIME - (currentTime - lastUseTime)) / 20) + " seconds");
-                        return;
-                    }
-                }
+            List<String> lore = player.getInventory().getItemInMainHand.getItemMeta().getLore();
 
-                player.sendTitle("", "§dYou used an ability!");
-                cooldowns.put(playerId, currentTime);
+            if (lore != null) {
+                if (lore.contains(player.getName())) {
+                    World world = player.getWorld();
+                    long currentTime = world.getTime();
+                    
+                    if (cooldowns.containsKey(playerId)) {
+                        long lastUseTime = cooldowns.get(playerId);
+                        if (currentTime - lastUseTime < COOLDOWN_TIME) {
+                            player.sendTitle("", "§dCooldown: " + ((COOLDOWN_TIME - (currentTime - lastUseTime)) / 20) + " seconds");
+                            return;
+                        }
+                    }
+
+                    player.sendTitle("", "§dYou used an ability!");
+                    cooldowns.put(playerId, currentTime);
+                }
             }
         }
     }
