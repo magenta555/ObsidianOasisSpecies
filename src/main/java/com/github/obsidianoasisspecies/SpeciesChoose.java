@@ -81,7 +81,8 @@ public class SpeciesChoose implements Listener {
         String title = event.getView().getTitle();
         Player player = (Player) event.getWhoClicked();    
 
-        if (title.contains("Choose")) {    
+        if (title.contains("Choose")) {
+            selectedSoulTool = null;
             event.setCancelled(true);
             int slot = event.getSlot();    
             if (slotSpeciesMap.containsKey(slot)) {    
@@ -130,7 +131,6 @@ public class SpeciesChoose implements Listener {
 
                 if (selectedSoulTool != null) {
                     player.getInventory().addItem(selectedSoulTool);
-                    selectedSoulTool = null;
                 }
 
             } else if (clickedItem.getType() == Material.REDSTONE_BLOCK) {
@@ -157,7 +157,7 @@ public class SpeciesChoose implements Listener {
             ItemStack soulToolItem = new ItemStack(materials[i]);
             ItemMeta soulToolMeta = soulToolItem.getItemMeta();
             soulToolMeta.setDisplayName(color + "Soul Tool");
-            soulToolMeta.setLore(Arrays.asList(color + player.getName() + "'s soul is linked to this tool!"));
+            soulToolMeta.setLore(Arrays.asList("Owner: " + color + player.getName()));
             soulToolMeta.setUnbreakable(true);
             soulToolItem.setItemMeta(soulToolMeta);
             soulToolInventory.setItem(i, soulToolItem);

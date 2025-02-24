@@ -35,7 +35,7 @@ public class SoulForger implements Listener {
             List<String> lore = player.getInventory().getItemInMainHand().getItemMeta().getLore();
 
             if (lore != null) {
-                if (lore.contains(player.getName())) {
+                if (lore.contains("Owner: " + Species.SOULFORGER.getChatColor() + player.getName())) {
                     World world = player.getWorld();
                     long currentTime = world.getTime();
                     
