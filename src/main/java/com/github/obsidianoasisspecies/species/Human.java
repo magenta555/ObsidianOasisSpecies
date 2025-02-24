@@ -1,5 +1,6 @@
 package com.github.obsidianoasisspecies.species;
 
+import com.github.obsidianoasisspecies.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
