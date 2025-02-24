@@ -33,6 +33,17 @@ public class ObsidianOasisSpecies extends JavaPlugin {
         getCommand("species").setExecutor(new SpeciesCommand(this));
         getCommand("species").setTabCompleter(this);
         getServer().getPluginManager().registerEvents(new SpeciesChoose(this), this);
+
+        getServer().getPluginManager().registerEvents(new Human(this), this);
+        getServer().getPluginManager().registerEvents(new Merfolk(this), this);
+        getServer().getPluginManager().registerEvents(new NightCreature(this), this);
+        getServer().getPluginManager().registerEvents(new SoulForger(this), this);
+        getServer().getPluginManager().registerEvents(new Vampire(this), this);
+        getServer().getPluginManager().registerEvents(new Werewolf(this), this);
+
+
+
+
         new SpeciesRunnable(this).runTaskTimer(this, 0L, 20L);
     }
 

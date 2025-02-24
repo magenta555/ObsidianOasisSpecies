@@ -12,9 +12,12 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Vampire implements Listener {
-
     private final Map<UUID, Long> cooldowns = new HashMap<>();
     private final int COOLDOWN_TIME = 10 * 20;
+
+    public Vampire(ObsidianOasisSpecies plugin) {    
+        this.plugin = plugin;   
+    }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {

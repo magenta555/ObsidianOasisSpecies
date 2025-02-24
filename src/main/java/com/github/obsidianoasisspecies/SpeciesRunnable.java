@@ -33,6 +33,7 @@ public class SpeciesRunnable extends BukkitRunnable {
             if (species != null) {
                 Team team = scoreboard.registerNewTeam(player.getName() + species.getName());
                 team.setPrefix(species.getName());
+                team.addPlayer(player);
                 applyConditionalEffects(player, species);
             }
         }
