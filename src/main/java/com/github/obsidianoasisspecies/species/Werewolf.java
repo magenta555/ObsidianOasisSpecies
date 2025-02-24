@@ -30,8 +30,6 @@ public class Werewolf implements Listener {
             return;
         }
 
-        return; // Disabled for now
-
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (player.getInventory().getItemInMainHand().getType().toString().contains("SWORD")) {
                 

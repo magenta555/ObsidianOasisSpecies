@@ -31,7 +31,7 @@ public enum Species {
         PotionEffectType.SLOW_FALLING)),
     WEREWOLF("§6Werewolf", "§6", 20, Arrays.asList(
         PotionEffectType.GLOWING, 
-        PotionEffectType.WIND_CHARGED, 
+        PotionEffectType.RESISTANCE, 
         PotionEffectType.SATURATION));
 
     private final String name;
