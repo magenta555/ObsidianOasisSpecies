@@ -1,6 +1,6 @@
 package com.github.obsidianoasisspecies;
 
-import com.github.obsidianoasisspecies.species.Species;
+import com.github.obsidianoasisspecies.species.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -40,9 +40,6 @@ public class ObsidianOasisSpecies extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new SoulForger(this), this);
         getServer().getPluginManager().registerEvents(new Vampire(this), this);
         getServer().getPluginManager().registerEvents(new Werewolf(this), this);
-
-
-
 
         new SpeciesRunnable(this).runTaskTimer(this, 0L, 20L);
     }

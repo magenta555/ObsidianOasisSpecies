@@ -25,7 +25,7 @@ public class SoulForger implements Listener {
         UUID playerId = player.getUniqueId();
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (player.getInventory().getItemInMainHand().getType().toString().contains("SWORD")) {
+            if (player.getInventory().getItemInMainHand().getLore().contains(player.getName())) {
                 
                 World world = player.getWorld();
                 long currentTime = world.getTime();
