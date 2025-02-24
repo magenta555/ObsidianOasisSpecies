@@ -83,15 +83,15 @@ public class SpeciesChoose implements Listener {
             event.setCancelled(true);
             int slot = event.getSlot();    
             if (slotSpeciesMap.containsKey(slot)) {    
-                chosenSpecies = slotSpeciesMap.get(slot);    
-                openConfirmationInventory(player);    
+                chosenSpecies = slotSpeciesMap.get(slot); 
+                if (confirmedSpecies == Species.SOULFORGER) {
+                    openSoulToolInventory(player);
+                } else {   
+                    openConfirmationInventory(player);   
+                } 
             }   
         } else if (title.contains("Confirm")) {
             handleConfirmation(event);
-            Species confirmedSpecies = plugin.getPlayerSpecies(player);
-            if (confirmedSpecies == Species.SOULFORGER) {
-                openSoulToolInventory(player);
-            }
         } else if (title.contains("Soul")) {
             handleSoulTool(event);
         }
@@ -124,6 +124,7 @@ public class SpeciesChoose implements Listener {
                 plugin.setPlayerSpecies(player, chosenSpecies);
                 player.sendTitle("", "§d§lYou are now a " + chosenSpecies.getName());
                 player.closeInventory();
+                return;
             } else if (clickedItem.getType() == Material.REDSTONE_BLOCK) {
                 player.openInventory(getInventory());
             }
@@ -133,7 +134,7 @@ public class SpeciesChoose implements Listener {
 
     private void openSoulToolInventory(Player player) {
         String color = Species.SOULFORGER.getChatColor();
-        Inventory soulToolInventory = Bukkit.createInventory(null, 9, color + "Choose a Soul Tool!"); 
+        Inventory soulToolInventory = Bukkit.createInventory(null, 9, color + "Select a Soul Tool!"); 
 
         Material[] materials = {
             Material.IRON_PICKAXE,
@@ -162,6 +163,7 @@ public class SpeciesChoose implements Listener {
         ItemStack clickedItem = event.getCurrentItem();
 
         if (clickedItem != null && clickedItem.hasItemMeta()) {
+            openConfirmationInventory(player);
             player.getInventory().addItem(clickedItem);
         }
     }
