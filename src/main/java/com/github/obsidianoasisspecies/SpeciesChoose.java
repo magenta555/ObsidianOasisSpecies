@@ -71,21 +71,33 @@ public class SpeciesChoose implements Listener {
     public Inventory getInventory() {   
         return inventory;   
     }
+
+
     @SuppressWarnings("deprecation")
     @EventHandler   
     public void onInventoryClick(InventoryClickEvent event) {    
-        if (event.getView().getTitle().contains("Choose")) {    
-            Player player = (Player) event.getWhoClicked();    
+        String title = event.getView().getTitle() 
+        Player player = (Player) event.getWhoClicked();    
+
+        if (title.contains("Choose")) {    
             event.setCancelled(true);
             int slot = event.getSlot();    
             if (slotSpeciesMap.containsKey(slot)) {    
                 chosenSpecies = slotSpeciesMap.get(slot);    
                 openConfirmationInventory(player);    
             }   
-        } else if (event.getView().getTitle().contains("Confirm")) {
+        } else if (title.contains("Confirm")) {
             handleConfirmation(event);
-        }    
+            Species confirmedSpecies = plugin.getPlayerSpecies();
+            if (confirmedSpecies == Species.SOULFORGER) {
+                openSoulToolInventory(player);
+            }
+        } else if (title.contains("Soul")) {
+            handleSoulTool(event);
+        }
     }
+
+
     @SuppressWarnings("deprecation")
     private void openConfirmationInventory(Player player) {
         Inventory confirmationInventory = Bukkit.createInventory(null, 9, "§dConfirm your choice: " + chosenSpecies.getName());   
@@ -117,4 +129,41 @@ public class SpeciesChoose implements Listener {
             }
         }
     }
+
+
+    private void openSoulToolInventory(Player player) {
+        String color = Species.SOULFORGER.getChatColor();
+        Inventory soulToolInventory = Bukkit.createInventory(null, 9, color + "Choose a Soul Tool!"); 
+
+        Material[] materials = {
+            Material.IRON_PICKAXE,
+            Material.IRON_AXE,
+            Material.IRON_SHOVEL,
+            Material.IRON_HOE,
+            Material.IRON_SWORD
+        };
+
+        for (int i = 0; i < materials.length; i++) {
+            ItemStack soulToolItem = new ItemStack(materials[i]);
+            ItemMeta soulToolMeta = soulToolItem.getItemMeta();
+            soulToolMeta.setDisplayName(color + "Soul Tool");
+            soulToolMeta.setLore(Arrays.asList(color + "Owner: " + player.getName()));
+            soulToolMeta.setUnbreakable(true);
+            soulToolItem.setItemMeta(soulToolMeta);
+            soulToolInventory.setItem(i, soulToolItem);
+        }
+
+        player.openInventory(soulToolInventory);
+    }
+
+    private void handleSoulTool(InventoryClickEvent event) {
+        Player player = (Player) event.getWhoClicked();   
+        event.setCancelled(true);
+        ItemStack clickedItem = event.getCurrentItem();
+
+        if (clickedItem != null && clickedItem.hasItemMeta()) {
+            player.getInventory().addItem(clickedItem);
+        }
+    }
+
 }

@@ -19,16 +19,16 @@ public enum Species {
         PotionEffectType.DOLPHINS_GRACE)),
     NIGHTCREATURE("§bNight Creature", "§b", 8, Arrays.asList(
         PotionEffectType.INVISIBILITY, 
-        PotionEffectType.FIRE_RESISTANCE, 
+        PotionEffectType.INFESTED, 
         PotionEffectType.JUMP_BOOST)),
     SOULFORGER("§8Soul Forger", "§8", 11, Arrays.asList(
-        PotionEffectType.SLOW_FALLING, 
-        PotionEffectType.WEAKNESS, 
+        PotionEffectType.STRENGTH, 
+        PotionEffectType.SLOWNESS, 
         PotionEffectType.HASTE)),
     VAMPIRE("§4Vampire", "§4", 13, Arrays.asList(
         PotionEffectType.NIGHT_VISION, 
         PotionEffectType.REGENERATION, 
-        PotionEffectType.STRENGTH)),
+        PotionEffectType.SLOW_FALLING)),
     WEREWOLF("§6Werewolf", "§6", 20, Arrays.asList(
         PotionEffectType.GLOWING, 
         PotionEffectType.WIND_CHARGED, 
