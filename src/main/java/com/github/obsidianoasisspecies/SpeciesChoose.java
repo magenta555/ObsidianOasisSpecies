@@ -84,7 +84,7 @@ public class SpeciesChoose implements Listener {
             int slot = event.getSlot();    
             if (slotSpeciesMap.containsKey(slot)) {    
                 chosenSpecies = slotSpeciesMap.get(slot); 
-                if (confirmedSpecies == Species.SOULFORGER) {
+                if (chosenSpecies == Species.SOULFORGER) {
                     openSoulToolInventory(player);
                 } else {   
                     openConfirmationInventory(player);   
