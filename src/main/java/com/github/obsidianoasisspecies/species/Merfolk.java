@@ -35,12 +35,12 @@ public class Merfolk implements Listener {
                 if (cooldowns.containsKey(playerId)) {
                     long lastUseTime = cooldowns.get(playerId);
                     if (currentTime - lastUseTime < COOLDOWN_TIME) {
-                        player.sendTitle("", "Cooldown: " + ((COOLDOWN_TIME - (currentTime - lastUseTime)) / 20) + " seconds");
+                        player.sendTitle(" ", "Cooldown: " + ((COOLDOWN_TIME - (currentTime - lastUseTime)) / 20) + " seconds");
                         return;
                     }
                 }
 
-                player.sendTitle("", "You used an ability!");
+                player.sendTitle(" ", "You used an ability!");
                 cooldowns.put(playerId, currentTime);
             }
         }
