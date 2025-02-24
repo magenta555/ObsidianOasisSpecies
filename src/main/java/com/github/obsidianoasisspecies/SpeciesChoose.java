@@ -124,9 +124,9 @@ public class SpeciesChoose implements Listener {
                 plugin.setPlayerSpecies(player, chosenSpecies);
                 player.sendTitle("", "§d§lYou are now a " + chosenSpecies.getName());
                 player.closeInventory();
-                return;
             } else if (clickedItem.getType() == Material.REDSTONE_BLOCK) {
-                player.openInventory(getInventory());
+                player.closeInventory();
+                return;
             }
         }
     }
