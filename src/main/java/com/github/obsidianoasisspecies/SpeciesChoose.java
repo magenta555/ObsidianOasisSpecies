@@ -88,7 +88,7 @@ public class SpeciesChoose implements Listener {
             }   
         } else if (title.contains("Confirm")) {
             handleConfirmation(event);
-            Species confirmedSpecies = plugin.getPlayerSpecies();
+            Species confirmedSpecies = plugin.getPlayerSpecies(player);
             if (confirmedSpecies == Species.SOULFORGER) {
                 openSoulToolInventory(player);
             }
@@ -104,7 +104,7 @@ public class SpeciesChoose implements Listener {
         ItemStack confirmItem = new ItemStack(Material.EMERALD_BLOCK);
         ItemMeta confirmMeta = confirmItem.getItemMeta();
         confirmMeta.setDisplayName("§2§lConfirm!");
-        confirmMeta.setLore(Arrays.asList("§d§lClick to confirm: " + chosenSpecies.getName()));
+        confirmMeta.setLore(Arrays.asList("§2§lClick to confirm!"));
         confirmItem.setItemMeta(confirmMeta);
         ItemStack cancelItem = new ItemStack(Material.REDSTONE_BLOCK);
         ItemMeta cancelMeta = cancelItem.getItemMeta();
