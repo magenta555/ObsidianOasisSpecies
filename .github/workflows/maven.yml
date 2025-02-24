@@ -17,3 +17,8 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package
+    - name: Maven Jar Publish
+      uses: eric2788/maven-jar-publish@v3
+      with:
+        java-version: 21
+          
