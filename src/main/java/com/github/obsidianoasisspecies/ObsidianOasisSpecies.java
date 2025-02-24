@@ -33,7 +33,6 @@ public class ObsidianOasisSpecies extends JavaPlugin {
         getCommand("species").setExecutor(new SpeciesCommand(this));
         getCommand("species").setTabCompleter(this);
         getServer().getPluginManager().registerEvents(new SpeciesChoose(this), this);
-        // getServer().getPluginManager().registerEvents(new Chat(this), this); 
         new SpeciesRunnable(this).runTaskTimer(this, 0L, 20L);
     }
 
@@ -47,13 +46,13 @@ public class ObsidianOasisSpecies extends JavaPlugin {
     }
 
     public void setPlayerSpecies(Player player, Species species) {
-        removeSpeciesAttributes(player); // Remove old attributes
+        removeSpeciesAttributes(player);
         playerSpecies.put(player.getUniqueId(), species);
         saveSpeciesData();
     }
 
     public void clearPlayerSpecies(Player player) {
-        removeSpeciesAttributes(player); // Remove old attributes
+        removeSpeciesAttributes(player);
         playerSpecies.remove(player.getUniqueId());
         saveSpeciesData();
     }
@@ -64,13 +63,11 @@ public class ObsidianOasisSpecies extends JavaPlugin {
 
     @SuppressWarnings("deprecation")
     public void removeSpeciesAttributes(Player player) {
-        // Remove all potion effects
         for (PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType());
         }
         
-        // Reset health
-        player.setMaxHealth(20); // Reset to default
+        player.setMaxHealth(20);
     }
 
     private void loadSpeciesData() {

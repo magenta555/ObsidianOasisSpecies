@@ -10,8 +10,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.Location;
 import org.bukkit.scoreboard.*;
-
-import io.papermc.paper.scoreboard.numbers.NumberFormat;
 import io.papermc.paper.world.MoonPhase;
 
 public class SpeciesRunnable extends BukkitRunnable {
@@ -25,22 +23,16 @@ public class SpeciesRunnable extends BukkitRunnable {
     @Override
     public void run() {
 
+        ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
+        Scoreboard scoreboard = scoreboardManager.getNewScoreboard();
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             Species species = plugin.getPlayerSpecies(player);
-
-            ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
-            Scoreboard scoreboard = scoreboardManager.getNewScoreboard();
-            for (Player otherPlayer : Bukkit.getOnlinePlayers()) {
-                if (!otherPlayer.equals(player)) {
-                    otherPlayer.setScoreboard(scoreboard);
-                }
-            }
+            player.setScoreboard(scoreboard);
 
             if (species != null) {
-                Objective objective = scoreboard.registerNewObjective("species", "dummy", species.getName(), RenderType.INTEGER);
-                objective.numberFormat(NumberFormat.blank());
-                objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-            
+                Team team = scoreboard.registerNewTeam(player.getName() + species.getName())
+                team.setPrefix(species.getName());
                 applyConditionalEffects(player, species);
             }
         }
@@ -55,33 +47,18 @@ public class SpeciesRunnable extends BukkitRunnable {
         boolean isVampireOrNightCreature = species == Species.VAMPIRE || species == Species.NIGHTCREATURE;
         boolean isWerewolf = species == Species.WEREWOLF;
 
-        // Set max health based on species and conditions
-        if ((isVampireOrNightCreature || isWerewolf) && isDay) {
-            player.setMaxHealth(species.getMaxHearts() / 2); // Half health during the day
-        } else if (isWerewolf && moonPhase != MoonPhase.FULL_MOON) {
+        if ((isVampireOrNightCreature || isWerewolf) && isDay || (isWerewolf && moonPhase != MoonPhase.FULL_MOON)) {
             player.setMaxHealth(species.getMaxHearts() / 2);
         } else {
-            player.setMaxHealth(species.getMaxHearts()); // Normal max health for other species
+            player.setMaxHealth(species.getMaxHearts());
         }
 
-        // Apply effects based on species and conditions
-        if (isVampireOrNightCreature) {
-            if (isDay) {
-                if (isUnderSunlight(player)) {
-                    player.setFireTicks(20);
-                }
-            } else {
-                applyPotionEffects(player, species);
-            }
-        } else if (isWerewolf) {
-            if (!isDay && moonPhase == MoonPhase.FULL_MOON) {
-                applyPotionEffects(player, species);
-            } else if (!isDay) {
-                applyPotionEffects(player, species);
-            }
+        if (isDay && isVampireOrNightCreature && isUnderSunlight(player)) {
+            player.setFireTicks(20);
         } else {
             applyPotionEffects(player, species);
         }
+
     }
 
     private void applyPotionEffects(Player player, Species species) {
@@ -90,7 +67,6 @@ public class SpeciesRunnable extends BukkitRunnable {
         }
     }
 
-
     private boolean isUnderSunlight(Player player) {
         Location location = player.getLocation();
         World world = player.getWorld();
@@ -98,10 +74,10 @@ public class SpeciesRunnable extends BukkitRunnable {
         for (int y = location.getBlockY() + 1; y <= world.getMaxHeight(); y++) {
             Block block = world.getBlockAt(location.getBlockX(), y, location.getBlockZ());
             if (block.getType().isSolid()) {
-                return false; // If any solid block is found above, they are not in direct sunlight.
+                return false; 
             }
         }
 
-        return true; // If no solid blocks are found above, they are exposed to sunlight.
+        return true;
     }
 }
