@@ -47,7 +47,7 @@ public class SoulForger implements Listener {
                         }
                     }
 
-                player.sendTitle("", Species.SOULFORGER.getChatColor + "Ability Activated!");
+                player.sendTitle("", Species.SOULFORGER.getChatColor() + "Ability Activated!");
                     cooldowns.put(playerId, currentTime);
                 }
             }

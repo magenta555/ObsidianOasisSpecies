@@ -44,7 +44,7 @@ public class Vampire implements Listener {
                     }
                 }
 
-                player.sendTitle("", Species.VAMPIRE.getChatColor + "Ability Activated!");
+                player.sendTitle("", Species.VAMPIRE.getChatColor() + "Ability Activated!");
                 cooldowns.put(playerId, currentTime);
             }
         }

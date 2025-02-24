@@ -44,7 +44,7 @@ public class Human implements Listener {
                     }
                 }
 
-                player.sendTitle("", Species.HUMAN.getChatColor + "Ability Activated!");
+                player.sendTitle("", Species.HUMAN.getChatColor() + "Ability Activated!");
                 cooldowns.put(playerId, currentTime);
             }
         }
