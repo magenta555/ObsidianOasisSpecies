@@ -157,7 +157,7 @@ public class SpeciesChoose implements Listener {
             ItemStack soulToolItem = new ItemStack(materials[i]);
             ItemMeta soulToolMeta = soulToolItem.getItemMeta();
             soulToolMeta.setDisplayName(color + "Soul Tool");
-            soulToolMeta.setLore(Arrays.asList("Owner: " + color + player.getName()));
+            soulToolMeta.setLore(Arrays.asList(color + "Owner: " + player.getName()));
             soulToolMeta.setUnbreakable(true);
             soulToolItem.setItemMeta(soulToolMeta);
             soulToolInventory.setItem(i, soulToolItem);

@@ -31,11 +31,13 @@ public class SoulForger implements Listener {
             return;
         }
 
+        String color = Species.SOULFORGER.getChatColor();
+
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             List<String> lore = player.getInventory().getItemInMainHand().getItemMeta().getLore();
 
             if (lore != null) {
-                if (lore.contains("Owner: " + Species.SOULFORGER.getChatColor() + player.getName())) {
+                if (lore.contains(color + "Owner: " + player.getName())) {
                     World world = player.getWorld();
                     long currentTime = world.getTime();
                     
@@ -47,7 +49,7 @@ public class SoulForger implements Listener {
                         }
                     }
 
-                    player.sendTitle("", Species.SOULFORGER.getChatColor() + "Ability Activated!");
+                    player.sendTitle("", color + "Ability Activated!");
                     cooldowns.put(playerId, currentTime);
                 }
             }
