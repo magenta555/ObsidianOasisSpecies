@@ -44,7 +44,7 @@ public class NightCreature implements Listener {
                     }
                 }
 
-                player.sendTitle("", "§dYou used an ability!");
+                player.sendTitle("", Species.NIGHTCREATURE.getChatColor + "Ability Activated!");
                 cooldowns.put(playerId, currentTime);
             }
         }

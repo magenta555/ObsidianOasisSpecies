@@ -45,7 +45,7 @@ public class Werewolf implements Listener {
                     }
                 }
 
-                player.sendTitle("", "§dYou used an ability!");
+                player.sendTitle("", Species.WEREWOLF.getChatColor + "Ability Activated!");
                 cooldowns.put(playerId, currentTime);
             }
         }

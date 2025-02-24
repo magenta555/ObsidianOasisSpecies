@@ -32,7 +32,7 @@ public class SoulForger implements Listener {
         }
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            List<String> lore = player.getInventory().getItemInMainHand.getItemMeta().getLore();
+            List<String> lore = player.getInventory().getItemInMainHand().getItemMeta().getLore();
 
             if (lore != null) {
                 if (lore.contains(player.getName())) {
@@ -47,7 +47,7 @@ public class SoulForger implements Listener {
                         }
                     }
 
-                    player.sendTitle("", "§dYou used an ability!");
+                player.sendTitle("", Species.SOULFORGER.getChatColor + "Ability Activated!");
                     cooldowns.put(playerId, currentTime);
                 }
             }

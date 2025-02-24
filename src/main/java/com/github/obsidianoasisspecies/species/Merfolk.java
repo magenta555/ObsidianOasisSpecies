@@ -44,7 +44,7 @@ public class Merfolk implements Listener {
                     }
                 }
 
-                player.sendTitle("", "§dYou used an ability!");
+                player.sendTitle("", Species.MERFOLK.getChatColor + "Ability Activated!");
                 cooldowns.put(playerId, currentTime);
             }
         }
