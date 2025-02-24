@@ -17,8 +17,8 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package
-    - name: Maven Jar Publish
-      uses: eric2788/maven-jar-publish@v3
+    - name: Upload JAR file
+      uses: actions/upload-artifact@v4
       with:
-        java-version: 21
-          
+        name: plugin-jar-file
+        path: target/*.jar
