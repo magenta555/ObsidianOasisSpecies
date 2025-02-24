@@ -17,6 +17,8 @@ public class SpeciesChoose implements Listener {
     private final ObsidianOasisSpecies plugin;   
     private final Map<Integer, Species> slotSpeciesMap = new HashMap<>();
     private Species chosenSpecies;
+    private ItemStack selectedSoulTool;
+
     @SuppressWarnings("deprecation")
     public SpeciesChoose(ObsidianOasisSpecies plugin) {    
         this.plugin = plugin;    
@@ -115,6 +117,7 @@ public class SpeciesChoose implements Listener {
         confirmationInventory.setItem(8, cancelItem);
         player.openInventory(confirmationInventory);
     }
+
     private void handleConfirmation(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();   
         event.setCancelled(true);
@@ -124,6 +127,11 @@ public class SpeciesChoose implements Listener {
                 plugin.setPlayerSpecies(player, chosenSpecies);
                 player.sendTitle("", "§d§lYou are now a " + chosenSpecies.getName());
                 player.closeInventory();
+
+                if (selectedSoulTool != null) {
+                    player.getInventory().addItem(selectedSoulTool);
+                }
+
             } else if (clickedItem.getType() == Material.REDSTONE_BLOCK) {
                 player.closeInventory();
                 return;
@@ -160,11 +168,10 @@ public class SpeciesChoose implements Listener {
     private void handleSoulTool(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();   
         event.setCancelled(true);
-        ItemStack clickedItem = event.getCurrentItem();
+        selectedSoulTool = event.getCurrentItem();
 
-        if (clickedItem != null && clickedItem.hasItemMeta()) {
+        if (selectedSoulTool != null && selectedSoulTool.hasItemMeta()) {
             openConfirmationInventory(player);
-            player.getInventory().addItem(clickedItem);
         }
     }
 
